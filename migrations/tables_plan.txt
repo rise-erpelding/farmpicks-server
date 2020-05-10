@@ -1,0 +1,27 @@
+1. Small Farms - Create Table
+ID, Farm name, Address Line 1 & 2, City, State, Zip, Contact phone, contact person, Short description of farm, date modified (default now), Archived
+
+2. Small farms - Update Table - Product Category
+Meat/Poultry
+Seafood
+Dairy
+Eggs
+Produce
+Plants
+Preserves/Syrups
+Bee Products
+Nuts/Dried Fruits
+Bakery/Desserts
+Coffee/Teas
+Bath & Body Products
+Prepared foods
+
+3. Small farms - update table - get method?
+Shipping
+Delivery
+Pick-up
+Farmers' Market
+
+Get Method details
+
+4. Small farms - update table - Add photos
