@@ -107,9 +107,17 @@ describe('Farms Endpoints', function() {
         })
     })
 
-    // it(`removes XSS attack content from response`, () => {
-      
-    // })
+    it(`removes XSS attack content from response`, () => {
+      const { maliciousFarm, sanitizedFarm } = makeMaliciousFarm()
+      return supertest(app)
+        .post(`/api/farms`)
+        .send(maliciousFarm)
+        .expect(201)
+        .expect(res => {
+          expect(res.body.address_1).to.eql(sanitizedFarm.address_1)
+          expect(res.body.farm_description).to.eql(sanitizedFarm.farm_description)
+        })
+    })
   })
 
 })
