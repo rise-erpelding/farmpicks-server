@@ -68,5 +68,43 @@ describe('Farms Endpoints', function() {
     })
   })
 
+  describe(`POST /api/farms`, () => {
+    it(`creates a new farm, responding with 201 and the new farm`, () => {
+      const newFarm = {
+        farm_name: 'New Farm',
+        address_1: '123 Test',
+        city: 'Testy',
+        state: 'FL',
+        phone_number: '555-1234',
+        farm_description: 'Test description test test'
+      }
+      return supertest(app)
+        .post(`/api/farms`)
+        .send(newFarm)
+        .expect(201)
+        .expect(res => {
+          expect(res.body.farm_name).to.eql(newFarm.farm_name)
+          expect(res.body.address_1).to.eql(newFarm.address_1)
+          expect(res.body.city).to.eql(newFarm.city)
+          expect(res.body.state).to.eql(newFarm.state)
+          expect(res.body.phone_number).to.eql(newFarm.phone_number)
+          expect(res.body.farm_description).to.eql(newFarm.farm_description)
+          expect(res.body).to.have.property('id')
+          expect(res.headers.location).to.eql(`/api/farms/${res.body.id}`)
+          const expectedDate = new Intl.DateTimeFormat('en-US').format(new Date())
+          const actualDate = new Intl.DateTimeFormat('en-US').format(new Date(res.body.date_modified))
+          expect(actualDate).to.eql(expectedDate)
+        })
+    })
+
+    // it(`responds with 400 and an error message when the 'farm_name' is missing`, () => {
+
+    // })
+
+    // it(`removes XSS attack content from response`, () => {
+      
+    // })
+  })
+
 })
 
