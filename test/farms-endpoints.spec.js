@@ -97,9 +97,15 @@ describe('Farms Endpoints', function() {
         })
     })
 
-    // it(`responds with 400 and an error message when the 'farm_name' is missing`, () => {
-
-    // })
+    it(`responds with 400 and an error message when the 'farm_name' is missing`, () => {
+      const noNameFarm = { farm_description: 'Something not quite right here.' }
+      return supertest(app)
+        .post(`/api/farms`)
+        .send(noNameFarm)
+        .expect(400, {
+          error: { message: `Missing 'farm_name' in request body` }
+        })
+    })
 
     // it(`removes XSS attack content from response`, () => {
       
