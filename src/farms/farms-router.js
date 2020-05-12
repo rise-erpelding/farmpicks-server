@@ -29,5 +29,27 @@ farmsRouter
       })
       .catch(next)
   })
+  .post(jsonParser, (req, res, next) => {
+    const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived } = req.body
+    const newFarm = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived }
+
+    if (!farm_name) {
+      return res.status(400).json({
+        error: { message: `Missing 'farm_name' in request body` }
+      })
+    }
+
+    FarmsService.insertFarm(
+      req.app.get('db'),
+      newFarm
+    )
+      .then(farm => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `${farm.id}`))
+          .json(serializeFarm(farm))
+      })
+    .catch(next)
+  })
 
   module.exports = farmsRouter
