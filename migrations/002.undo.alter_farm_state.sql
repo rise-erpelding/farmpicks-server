@@ -1,0 +1,3 @@
+ALTER TABLE farms DROP COLUMN IF EXISTS state;
+
+DROP TYPE IF EXISTS state_category;

@@ -1,0 +1,5 @@
+INSERT INTO farms (farm_name, address_1, city, zip_code, state, phone_number, contact_name, farm_description)
+VALUES
+  ('Arrowhead Beef', '982 Hutchins Ln', 'Chipley', '32428', 'FL', '850-270-8804', 'Tony DeBlauw', 'The original ''farm direct grass-fed beef from Florida'', located in Chipley. The farm directly oversees all aspects of raising the livestock, and the beef is 100% grass-fed and grass-finished as well as hormone and antibiotic-free.'),
+
+  ('Aliff Acres', '3030 Purdue Rd', 'McDavid', '32568', 'FL', '850-777-4668', 'Thomas Aliff', 'A small, family-owned farm, located in McDavid. Specializes in heirloom, non-gmo produce using no till crop rotation methods, using integrated pest management. We offer a CSA subscription box with delivery to drop off points in Atmore, Pace, and Pensacola.');
