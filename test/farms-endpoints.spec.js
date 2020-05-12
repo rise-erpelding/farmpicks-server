@@ -120,5 +120,77 @@ describe('Farms Endpoints', function() {
     })
   })
 
+  describe(`GET /api/farms/:id`, () => {
+    context(`Given no farms in the database`, () => {
+      it(`responds with 404`, () => {
+        const nonexistentFarmId = 99999
+        return supertest(app)
+          .get(`/api/farms/${nonexistentFarmId}`)
+          .expect(404, { error: { message: `Farm does not exist` } })
+      })
+    })
+
+    context(`Given there are farms in the database`, () => {
+      const testFarms = makeFarmsArray();
+      
+      beforeEach(`insert farms`, () => {
+        return db
+          .into('farms')
+          .insert(testFarms)
+      })
+
+      it(`responds with 200 and the specified farm`, () => {
+        const farmId = 2
+        const expectedFarm = testFarms[farmId - 1]
+        return supertest(app)
+          .get(`/api/farms/${farmId}`)
+          .expect(200, expectedFarm)
+      })
+    })
+  })
+  
+  describe(`DELETE /api/farms/:id`, () => {
+    context(`Given no farms in the database`, () => {
+      it(`responds with 404`, () => {
+        const nonexistentFarmId = 99999
+        return supertest(app)
+          .delete(`/api/farms/${nonexistentFarmId}`)
+          .expect(404, { error: { message: `Farm does not exist` } })
+      })
+    })
+
+    context(`Given there are farms in the database`, () => {
+      const testFarms = makeFarmsArray()
+      
+      beforeEach(`insert farms`, () => {
+        return db
+          .into('farms')
+          .insert(testFarms)
+      })
+
+      it(`responds with 204 and removes the farm`, () => {
+        const idToRemove = 2
+        const expectedFarms = testFarms.filter(farm => farm.id !== idToRemove)
+        return supertest(app)
+          .delete(`/api/farms/${idToRemove}`)
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/farms`)
+              .expect(expectedFarms)
+          )
+      })
+    })
+  })
+
+  describe(`PATCH /api/farms/:id`, () => {
+    context(`Given there are no farms in the database`, () => {
+
+    })
+
+    context(`Given there are farms in the database`, () => {
+
+    })
+  })
 })
 
