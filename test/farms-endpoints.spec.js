@@ -184,12 +184,70 @@ describe('Farms Endpoints', function() {
   })
 
   describe(`PATCH /api/farms/:id`, () => {
+    const farmUpdateFields = {
+      farm_name: "Test Farm",
+      address_2: "Test address 2",
+      farm_description: "Test farm description"
+    }
     context(`Given there are no farms in the database`, () => {
-
+      it(`responds with 404`, () => {
+        const nonexistentFarmId = 9999
+        return supertest(app)
+          .patch(`/api/farms/${nonexistentFarmId}`)
+          .send(farmUpdateFields)
+          .expect(404, { error: { message: `Farm does not exist` } })
+      })
     })
 
     context(`Given there are farms in the database`, () => {
+      const testFarms = makeFarmsArray()
+      const idToUpdate = 2
 
+      beforeEach(`insert farms`, () => {
+        return db
+          .into('farms')
+          .insert(testFarms)
+      })
+
+      it(`responds with 204 and updates the farm`, () => {
+        return supertest(app)
+          .patch(`/api/farms/${idToUpdate}`)
+          .send(farmUpdateFields)
+          .expect(204)
+          .then(res => {
+            supertest(app)
+              .get(`/api/farms/${idToUpdate}`)
+              .expect(res => {
+                expect(res.body.farm_name).to.eql(farmUpdateFields.farm_name)
+                expect(res.body.address_2).to.eql(farmUpdateFields.address_2)
+                expect(res.body.farm_description).to.eql(farmUpdateFields.farm_description)
+                expect(res.body.contact_name).to.eql(testFarms[idToUpdate - 1].contact_name)
+              })
+          })
+      })
+
+      it(`responds with 400 if request body does not contain any appropriate fields to patch`, () => {
+        const invalidUpdateFields = { banana: 'Hello', potato: 'Goodbye' }
+        return supertest(app)
+          .patch(`/api/farms/${idToUpdate}`)
+          .send(invalidUpdateFields)
+          .expect(400, { error: {
+            message: `Request body must contain 'farm_name', 'address_1', 'address_2', 'city', 'zip_code', 'state', 'phone_number', 'contact_name', 'farm_description', or 'archived'` } })
+      })
+
+      it(`updates the date and time each time the farm is updated`, () => {
+        return supertest(app)
+          .patch(`/api/farms/${idToUpdate}`)
+          .send(farmUpdateFields)
+          .expect(204)
+          .then(res => {
+            supertest(app)
+              .get(`/api/farms/${idToUpdate}`)
+              .expect(res => {
+                expect(res.body.date_modified).to.not.eql(testFarms[idToUpdate - 1].date_modified)
+              })
+          })
+      })
     })
   })
 })

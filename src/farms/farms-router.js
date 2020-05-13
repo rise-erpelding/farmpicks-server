@@ -87,20 +87,20 @@ farmsRouter
   })
   .patch(jsonParser, (req, res, next) => {
     const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived } = req.body
-    const dateModified = new Date()
-    const farmToUpdate = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, date_modified: dateModified }
+    const farmToUpdate = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived }
     
-    // TODO: This needs a better validation
-    const numberOfUpdateValues = Object.values(farmToUpdate).filter(Boolean).length
-    if (numberOfUpdateValues === 0) {
+    const numberOfUpdateValuesGiven = Object.values(farmToUpdate).filter(Boolean).length
+    if (numberOfUpdateValuesGiven === 0) {
       return res
-        .status(400)
-        .json({
-          error: {
-            message: `Request body must contain 'farm_name', 'address_1', 'address_2', 'city', 'zip_code', 'state', 'phone_number', 'contact_name', 'farm_description', or 'archived'`
-          }
-        })
+      .status(400)
+      .json({
+        error: {
+          message: `Request body must contain 'farm_name', 'address_1', 'address_2', 'city', 'zip_code', 'state', 'phone_number', 'contact_name', 'farm_description', or 'archived'`
+        }
+      })
     }
+    
+    farmToUpdate.date_modified = new Date()
 
     FarmsService.updateFarm(
       req.app.get('db'),
