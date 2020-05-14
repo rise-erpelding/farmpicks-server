@@ -18,6 +18,8 @@ const serializeFarm = farm => ({
   farm_description: xss(farm.farm_description),
   date_modified: farm.date_modified,
   archived: farm.archived,
+  website: xss(farm.website),
+  purchase_details: xss(farm.purchase_details)
 })
 
 farmsRouter
@@ -30,8 +32,8 @@ farmsRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived } = req.body
-    const newFarm = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived }
+    const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details } = req.body
+    const newFarm = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details }
 
     if (!farm_name) {
       return res.status(400).json({
@@ -86,8 +88,8 @@ farmsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived } = req.body
-    const farmToUpdate = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived }
+    const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details } = req.body
+    const farmToUpdate = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details }
     
     const numberOfUpdateValuesGiven = Object.values(farmToUpdate).filter(Boolean).length
     if (numberOfUpdateValuesGiven === 0) {
