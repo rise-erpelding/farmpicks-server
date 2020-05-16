@@ -68,3 +68,13 @@ Run the tests `npm test`
 ## Deploying
 
 When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+
+
+## Endpoints
+PATH - /api/farms
+NAME - Farms
+DESCRIPTION - Search for farms by name, category
+PARAMETERS
+q (string) - Optional search term
+products (comma-delimited) - Optional to filter by what kind of product
+purchase_option (comma-delimited) - Optional to filter by purchase option
