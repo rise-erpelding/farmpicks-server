@@ -6,20 +6,25 @@ const farmsRouter = express.Router()
 const jsonParser = express.json()
 
 const serializeFarm = farm => ({
+  // TODO: Should I worry about the arrays being protected from xss attacks?
   id: farm.id,
   farm_name: xss(farm.farm_name),
+  products: farm.products,
+  farm_description: xss(farm.farm_description),
   address_1: xss(farm.address_1),
   address_2: xss(farm.address_2),
   city: xss(farm.city),
+  state: xss(farm.state),
   zip_code: farm.zip_code,
-  state: farm.state,
-  phone_number: xss(farm.phone_number),
   contact_name: xss(farm.contact_name),
-  farm_description: xss(farm.farm_description),
-  date_modified: farm.date_modified,
-  archived: farm.archived,
+  phone_number: xss(farm.phone_number),
+  purchase_options: farm.purchase_options,
+  purchase_details: xss(farm.purchase_details),
   website: xss(farm.website),
-  purchase_details: xss(farm.purchase_details)
+  cover_image: xss(farm.cover_image),
+  profile_image: xss(farm.profile_image),
+  date_modified: farm.date_modified,
+  archived: farm.archived
 })
 
 farmsRouter
@@ -32,14 +37,33 @@ farmsRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details } = req.body
-    const newFarm = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details }
+    const { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived } = req.body
+    const newFarm = { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived }
+    const farmArrays = { products, purchase_options }
+
+    for (const [key, value] of Object.entries(farmArrays))
+      if (value && !Array.isArray(value)) {
+        return res.status(400).json({
+          error: { message: `${key} must be an array` }
+        })
+      }
+
+    // if (purchase_options && !Array.isArray(purchase_options) || products && !Array.isArray(products)) {
+    //   return res.status(400).json({
+    //     error: { message: `must be an array` }
+    //   })
+    // }
 
     if (!farm_name) {
       return res.status(400).json({
         error: { message: `Missing 'farm_name' in request body` }
       })
     }
+
+
+
+    // TODO: Some sort of validation to ensure that products and purchase_options are both arrays
+
 
     FarmsService.insertFarm(
       req.app.get('db'),
@@ -88,8 +112,8 @@ farmsRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details } = req.body
-    const farmToUpdate = { farm_name, address_1, address_2, city, zip_code, state, phone_number, contact_name, farm_description, archived, website, purchase_details }
+    const { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived } = req.body
+    const farmToUpdate = { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived }
     
     const numberOfUpdateValuesGiven = Object.values(farmToUpdate).filter(Boolean).length
     if (numberOfUpdateValuesGiven === 0) {
@@ -97,7 +121,7 @@ farmsRouter
       .status(400)
       .json({
         error: {
-          message: `Request body must contain 'farm_name', 'address_1', 'address_2', 'city', 'zip_code', 'state', 'phone_number', 'contact_name', 'farm_description', or 'archived'`
+          message: `Request body must contain 'farm_name', 'products', 'farm_description', 'address_1', 'address_2', 'city', 'state', 'zip_code', 'contact_name', 'phone_number', 'purchase_options', 'purchase_details', 'website', 'cover_image', 'profile_image', or 'archived'`
         }
       })
     }
