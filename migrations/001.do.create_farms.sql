@@ -4,10 +4,17 @@ CREATE TABLE farms (
   address_1 TEXT,
   address_2 TEXT,
   city TEXT,
+  state TEXT,
   zip_code INTEGER,
   phone_number TEXT,
   contact_name TEXT,
+  products TEXT[],
   farm_description TEXT,
+  purchase_options TEXT[],
+  purchase_details TEXT,
+  website TEXT,
+  cover_image TEXT,
+  profile_image TEXT,
   date_modified TIMESTAMPTZ NOT NULL DEFAULT now(),
   archived BOOLEAN default false
 );
