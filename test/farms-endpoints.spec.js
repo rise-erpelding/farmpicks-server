@@ -1,6 +1,8 @@
 const knex = require('knex')
 const app = require('../src/app')
 
+//TODO: Figure out why this won't migrate
+
 const { makeFarmsArray, makeMaliciousFarm } = require('./farms.fixtures')
 
 describe('Farms Endpoints', function() {
@@ -47,7 +49,7 @@ describe('Farms Endpoints', function() {
     })
 
     context(`Given an XSS attack farm`, () => {
-      const testFarms = makeFarmsArray()
+      // const testFarms = makeFarmsArray()
       const { maliciousFarm, sanitizedFarm } = makeMaliciousFarm()
 
       beforeEach(`insert malicious farm`, () => {
@@ -76,7 +78,8 @@ describe('Farms Endpoints', function() {
         city: 'Testy',
         state: 'FL',
         phone_number: '555-1234',
-        farm_description: 'Test description test test'
+        farm_description: 'Test description test test',
+        products: ["Produce", "Bee Products"]
       }
       return supertest(app)
         .post(`/api/farms`)
@@ -89,6 +92,8 @@ describe('Farms Endpoints', function() {
           expect(res.body.state).to.eql(newFarm.state)
           expect(res.body.phone_number).to.eql(newFarm.phone_number)
           expect(res.body.farm_description).to.eql(newFarm.farm_description)
+          //This potentially needs to be changed because deep eql?
+          expect(res.body.products).to.eql(newFarm.products)
           expect(res.body).to.have.property('id')
           expect(res.headers.location).to.eql(`/api/farms/${res.body.id}`)
           const expectedDate = new Intl.DateTimeFormat('en-US').format(new Date())
@@ -106,6 +111,33 @@ describe('Farms Endpoints', function() {
           error: { message: `Missing 'farm_name' in request body` }
         })
     })
+
+    it(`responds with 400 and an error message when 'products' or 'purchase_options' is not an array`, () => {
+      const productsFarm = {
+        farm_name: 'TestFarm',
+        products: 'nope'
+      }
+      const purchaseOptionsFarm = {
+        farm_name: 'TestFarm',
+        purchase_options: {also: 'not good'}
+      }
+
+      return supertest(app)
+        .post(`/api/farms`)
+        .send(productsFarm)
+        .expect(400, {
+          error: { message: `'products' must be an array` }
+        })
+        .then(res => {
+          return supertest(app)
+            .post(`/api/farms`)
+            .send(purchaseOptionsFarm)
+            .expect(400, {
+              error: { message: `'purchase_options' must be an array` }
+            })
+        })
+    })
+  
 
     it(`removes XSS attack content from response`, () => {
       const { maliciousFarm, sanitizedFarm } = makeMaliciousFarm()
@@ -232,7 +264,7 @@ describe('Farms Endpoints', function() {
           .patch(`/api/farms/${idToUpdate}`)
           .send(invalidUpdateFields)
           .expect(400, { error: {
-            message: `Request body must contain 'farm_name', 'address_1', 'address_2', 'city', 'zip_code', 'state', 'phone_number', 'contact_name', 'farm_description', or 'archived'` } })
+            message: `Request body must contain 'farm_name', 'products', 'farm_description', 'address_1', 'address_2', 'city', 'state', 'zip_code', 'contact_name', 'phone_number', 'purchase_options', 'purchase_details', 'website', 'cover_image', 'profile_image', or 'archived'` } })
       })
 
       it(`updates the date and time each time the farm is updated`, () => {
