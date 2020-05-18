@@ -44,7 +44,7 @@ farmsRouter
     for (const [key, value] of Object.entries(farmArrays))
       if (value && !Array.isArray(value)) {
         return res.status(400).json({
-          error: { message: `${key} must be an array` }
+          error: { message: `'${key}' must be an array` }
         })
       }
 
