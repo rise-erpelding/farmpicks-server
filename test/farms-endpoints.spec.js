@@ -46,6 +46,42 @@ describe('Farms Endpoints', function() {
           .expect(200, testFarms)
       })
 
+      it(`searches for farms that contain a query term q in the name, description, purchase details, contact name, or city`, () => {
+        const searchTerm = 'beef'
+        return supertest(app)
+          .get(`/api/farms`)
+          .query(`q=${searchTerm}`)
+          .expect(200, [testFarms[0]])
+      })
+
+      it(`searches for farms selling a selected product category`, () => {
+        const productsQuery = 'produce'
+        return supertest(app)
+          .get(`/api/farms`)
+          .query(`products=${productsQuery}`)
+          .expect(200, [testFarms[1]])
+      })
+
+      it(`searches for farms offering a selected purchase option category`, () => {
+        const purchaseOptionsQuery = 'delivery'
+        return supertest(app)
+          .get(`/api/farms`)
+          .query(`purchaseOptions=${purchaseOptionsQuery}`)
+          .expect(200, [testFarms[0]])
+      })
+
+      it(`allows multiple queries`, () => {
+        const queryObject = {
+          q: 'poultry',
+          products: 'meat/poultry',
+          purchaseOptions: 'pick-up'
+        }
+        return supertest(app)
+          .get(`/api/farms`)
+          .query(queryObject)
+          .expect(200, [testFarms[0]])
+      })
+
     })
 
     context(`Given an XSS attack farm`, () => {
