@@ -30,11 +30,44 @@ const serializeFarm = farm => ({
 farmsRouter
   .route('/')
   .get((req, res, next) => {
-    FarmsService.getAllFarms(req.app.get('db'))
+    if (req.query.q) {
+      FarmsService.getFarmsBySearchTerm(req.app.get('db'), req.query.q)
+        .then(farms => {
+          res.json(farms.map(serializeFarm))
+        })
+    } else if (req.query.products) {
+      // TODO: see if you can get it to work with a comma-delimited list of product categories
+      const queryProducts = req.query.products.toLowerCase()
+      const validProductCategories = [`meat/poultry`, `seafood`, `dairy`, `eggs`, `produce`, `plants`, `preserves/syrup`, `bee products`, `nuts/dried fruits`, `prepared foods`, `coffee/tea`, `bath & body products`]
+      if (!validProductCategories.includes(queryProducts)) {
+        return res.status(400).json({
+          error: { message: `products must be one of ${validProductCategories}` }
+        })
+      }
+      FarmsService.getFarmsByProduct(req.app.get('db'), queryProducts)
+        .then(farms => {
+          res.json(farms.map(serializeFarm))
+        })
+    } else if (req.query.purchaseOptions) {
+      // TODO: see if you can get it to work with a comma-delimited list of purchase options
+      const queryPurchaseOptions = req.query.purchaseOptions.toLowerCase()
+      const validPurchaseOptionsCategories = [`shipping`, `delivery`, `pick-up`, `farmers market`]
+      if (!validPurchaseOptionsCategories.includes(queryPurchaseOptions)) {
+        return res.status(400).json({
+          error: { message: `purchaseOptions must be one of ${validPurchaseOptionsCategories}` }
+        })
+      }
+      FarmsService.getFarmsByPurchaseOptions(req.app.get('db'), queryPurchaseOptions)
+        .then(farms => {
+          res.json(farms.map(serializeFarm))
+        })
+    } else {
+      FarmsService.getAllFarms(req.app.get('db'))
       .then(farms => {
         res.json(farms.map(serializeFarm))
       })
       .catch(next)
+    }
   })
   .post(jsonParser, (req, res, next) => {
     const { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived } = req.body

@@ -4,6 +4,28 @@ const FarmsService = {
       .select('*')
       .from('farms')
   },
+  getFarmsBySearchTerm(knex, query) {
+    return knex
+      .select('*')
+      .from('farms')
+      .where('farm_name', 'ilike', '%' + query + '%')
+      .orWhere('farm_description', 'ilike', '%' + query + '%')
+      .orWhere('purchase_details', 'ilike', '%' + query + '%')
+      .orWhere('contact_name', 'ilike', '%' + query + '%')
+      .orWhere('city', 'ilike', '%' + query + '%')
+  },
+  getFarmsByProduct(knex, products) {
+    return knex
+      .select('*')
+      .from('farms')
+      .where(knex.raw('? = ANY (products)', [products]))
+  },
+  getFarmsByPurchaseOptions(knex, purchaseOptions) {
+    return knex
+      .select('*')
+      .from('farms')
+      .where(knex.raw('? = ANY (purchase_options)', [purchaseOptions]))
+  },
   insertFarm(knex, newFarm) {
     return knex
       .insert(newFarm)

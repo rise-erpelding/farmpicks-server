@@ -76,5 +76,5 @@ NAME - Farms
 DESCRIPTION - Search for farms by name, category
 PARAMETERS
 q (string) - Optional search term
-products (comma-delimited) - Optional to filter by what kind of product
-purchase_option (comma-delimited) - Optional to filter by purchase option
+products (comma-delimited coming soon) - Optional to filter by what kind of product
+purchaseOptions (comma-delimited coming soon) - Optional to filter by purchase option
