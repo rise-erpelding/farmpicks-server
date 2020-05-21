@@ -4,6 +4,13 @@ const FarmsService = {
       .select('*')
       .from('farms')
   },
+  // getAllProductCategories(knex) {
+  //   return knex
+  //     .select('*')
+  //     .from('farms')
+  //   // knex.raw('SELECT ARRAY(SELECT UNNEST(products) FROM  farms)')
+  //   // knex.raw('SELECT DISTINCT unnest(products) FROM farms')
+  // },
   getFarmsBySearchTerm(knex, query) {
     return knex
       .select('*')

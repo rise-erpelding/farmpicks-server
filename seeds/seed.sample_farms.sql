@@ -21,22 +21,29 @@ VALUES
   ('Clayton''s Raw Goat Milk', '935 Ashland Boulevard', 'Millport', 'FL', '32748', '850-555-2831', 'Clayton Edwards', '{"dairy"}', 'Our pure-bred Anglo-Nubian goats are 100% grass-fed, no corn, no soy, no wheat, and no GMOs. We use old-fashioned farming practices and the herds are certified. Want to buy a kid? Call Clayton to join the waitlist. We are currently experiencing high demand for goats so be patient with us!', '{"pick-up", "farmer''s market"}', 'Kid pick-up is on Fridays from 2-6pm at the farm in Millport. You MUST bring your own transportation for the goat and your certification of completion from our online goat-raising class. We will notify you when a kid is ready for you. Please do not show up unless you have been notified that a kid is available for you. Our milk is available as always at our farm and at the Millport Farmer''s Markets on Tuesday evening 4-7pm and Saturday morning 9am-1pm.', 'https://cat-bounce.com/', 'https://cdn.pixabay.com/photo/2017/09/05/22/35/goats-2719445_960_720.jpg', 'https://cdn.pixabay.com/photo/2016/05/08/20/25/glass-1379822_960_720.jpg');
 
 
---query for searchTerm
-  SELECT farm_name, farm_description, purchase_details, contact_name, city
-  FROM farms 
-  WHERE farm_name ILIKE '%market%'
-  OR farm_description ILIKE '%market%'
-  OR purchase_details ILIKE '%market%'
-  OR contact_name ILIKE '%market%'
-  OR city ILIKE '%market';
+-- --query for searchTerm
+--   SELECT farm_name, farm_description, purchase_details, contact_name, city
+--   FROM farms 
+--   WHERE farm_name ILIKE '%market%'
+--   OR farm_description ILIKE '%market%'
+--   OR purchase_details ILIKE '%market%'
+--   OR contact_name ILIKE '%market%'
+--   OR city ILIKE '%market';
 
---query for productTypes
-SELECT farm_name, products
-FROM farms
-WHERE 'Meat/Poultry' = ANY (products);
+-- --query for productTypes
+-- SELECT farm_name, products
+-- FROM farms
+-- WHERE 'Meat/Poultry' = ANY (products);
 
---query for purchaseOptions
-SELECT farm_name, purchase_options, purchase_details
-FROM farms
-WHERE 'Delivery' = ANY (purchase_options)
-OR purchase_details ILIKE '%delivery%';
+-- --query for purchaseOptions
+-- SELECT farm_name, purchase_options, purchase_details
+-- FROM farms
+-- WHERE 'Delivery' = ANY (purchase_options)
+-- OR purchase_details ILIKE '%delivery%';
+
+
+-- -- These both work to get all product categories from farms
+-- -- This one returns rows
+-- SELECT DISTINCT unnest(products) FROM farms;
+-- -- This one returns an array
+-- SELECT ARRAY(SELECT UNNEST(products) FROM  farms);
