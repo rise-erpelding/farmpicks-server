@@ -175,15 +175,16 @@ farmsRouter
   })
 
   // TODO: I want to create a new route to be able to get all the products. Tried to test various queries in knex/postgresql, found one that worked in postgres but unable to set this up to see if it works in knex as well.
-// farmsRouter
-//   .route('/products')
-//   .get((req, res, next) => {
-//     FarmsService.getAllFarms(req.app.get('db'))
-//     .then(farms => {
-//       res.json(farms.map(serializeFarm))
-//     })
-//     .catch(next)
-//   })
+farmsRouter
+  .route('/products')
+  .get((req, res, next) => {
+    res.json({ message: true })
+    // FarmsService.getAllFarms(req.app.get('db'))
+    // .then(farms => {
+    //   res.json(farms)
+    // })
+    // .catch(next)
+  })
 
 // farmsRouter
 //   .route('/purchase-categories')

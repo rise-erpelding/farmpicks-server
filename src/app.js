@@ -6,6 +6,7 @@ const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 
 const farmsRouter = require('./farms/farms-router')
+const productsRouter = require('./products/products-router')
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use(helmet())
 app.use(cors())
 
 app.use('/api/farms', farmsRouter)
+app.use('/api/products', productsRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello, boilerplate!')
