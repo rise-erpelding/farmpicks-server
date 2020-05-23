@@ -7,6 +7,7 @@ const { NODE_ENV } = require('./config')
 
 const farmsRouter = require('./farms/farms-router')
 const productsRouter = require('./products/products-router')
+const purchaseOptionsRouter = require('./purchaseOptions/purchaseOptions-router')
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use(cors())
 
 app.use('/api/farms', farmsRouter)
 app.use('/api/products', productsRouter)
+app.use('/api/purchase-options', purchaseOptionsRouter)
 
 app.get('/', (req, res) => {
   res.send('Hello, boilerplate!')
