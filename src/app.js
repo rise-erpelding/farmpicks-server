@@ -3,7 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
-const { NODE_ENV } = require('./config')
+const { CLIENT_ORIGIN, NODE_ENV } = require('./config')
 
 const farmsRouter = require('./farms/farms-router')
 const productsRouter = require('./products/products-router')
@@ -17,14 +17,16 @@ const morganOption = (NODE_ENV === 'production')
 
 app.use(morgan(morganOption))
 app.use(helmet())
-app.use(cors())
+app.use(cors({
+  origin: CLIENT_ORIGIN
+}))
 
 app.use('/api/farms', farmsRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/purchase-options', purchaseOptionsRouter)
 
 app.get('/', (req, res) => {
-  res.send('Hello, boilerplate!')
+  res.send('Hello FarmPicks API!')
 })
 
 app.use(function errorHandler(error, req, res, next) {
