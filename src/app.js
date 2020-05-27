@@ -3,7 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
-const { CLIENT_ORIGIN, NODE_ENV } = require('./config')
+const { NODE_ENV } = require('./config')
 
 const farmsRouter = require('./farms/farms-router')
 const productsRouter = require('./products/products-router')
@@ -17,9 +17,7 @@ const morganOption = (NODE_ENV === 'production')
 
 app.use(morgan(morganOption))
 app.use(helmet())
-app.use(cors({
-  origin: CLIENT_ORIGIN
-}))
+app.use(cors())
 
 app.use('/api/farms', farmsRouter)
 app.use('/api/products', productsRouter)
