@@ -5,7 +5,7 @@ CREATE TABLE farms (
   address_2 TEXT,
   city TEXT,
   state TEXT,
-  zip_code INTEGER,
+  zip_code TEXT,
   phone_number TEXT,
   contact_name TEXT,
   products TEXT[],
