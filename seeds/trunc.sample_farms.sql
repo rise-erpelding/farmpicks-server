@@ -1,3 +1,5 @@
 TRUNCATE
-  farms
+  farms,
+  users,
+  favorites
 RESTART IDENTITY CASCADE;

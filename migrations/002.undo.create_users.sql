@@ -1,0 +1,6 @@
+ALTER TABLE farms
+  DROP COLUMN IF EXISTS farm_owner_id;
+
+DROP TABLE IF EXISTS users;
+
+DROP TYPE IF EXISTS user_category;
