@@ -38,6 +38,7 @@ farmsRouter
     } else if (req.query.products) {
       // TODO: see if you can get it to work with a comma-delimited list of product categories
       const queryProducts = req.query.products.toLowerCase()
+      // TODO: see if you can get this to get the product categories from the endpoint products?
       const validProductCategories = [`meat/poultry`, `seafood`, `dairy`, `eggs`, `produce`, `plants`, `preserves/syrup`, `bee products`, `nuts/dried fruits`, `prepared foods`, `coffee/tea`, `bath & body products`]
       if (!validProductCategories.includes(queryProducts)) {
         return res.status(400).json({
