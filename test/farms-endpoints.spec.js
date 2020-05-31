@@ -1,7 +1,8 @@
 const knex = require('knex')
 const app = require('../src/app')
 
-//TODO: Figure out why this won't migrate
+// TODO: Figure out why this won't migrate
+// TODO: write tests for auth endpoints--POST /farms and PATCH /farms/:farmId
 
 const { makeFarmsArray, makeMaliciousFarm } = require('./farms.fixtures')
 
