@@ -6,7 +6,8 @@ const db = knex({
   client: 'pg',
   connection: DATABASE_URL,
   pool: {
-    afterCreate: () => {console.log("connection established")}
+    min: 0,
+    max: 7
     }
 })
 
