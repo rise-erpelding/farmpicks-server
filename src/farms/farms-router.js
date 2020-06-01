@@ -4,7 +4,7 @@ const FarmsService = require('./farms-service')
 const path = require('path')
 const farmsRouter = express.Router()
 const jsonParser = express.json()
-const { requireAuth } = require('../middleware/basic-auth')
+const { requireAuth } = require('../middleware/jwt-auth')
 
 const serializeFarm = farm => ({
   // TODO: Should I worry about the arrays being protected from xss attacks?
