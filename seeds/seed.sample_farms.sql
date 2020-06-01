@@ -53,3 +53,4 @@ INSERT INTO favorites (favorited_farm, favorited_by)
   (1, 12),
   (5, 12);
 
+COMMIT;
