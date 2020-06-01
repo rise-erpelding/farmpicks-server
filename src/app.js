@@ -24,7 +24,7 @@ app.use('/api/products', productsRouter)
 app.use('/api/purchase-options', purchaseOptionsRouter)
 
 app.get('/', (req, res) => {
-  res.send('Hello FarmPicks API!')
+  res.send('Hello FarmPicks!')
 })
 
 app.use(function errorHandler(error, req, res, next) {
