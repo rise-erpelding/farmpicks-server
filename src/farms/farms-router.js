@@ -136,7 +136,7 @@ farmsRouter
   .get((req, res, next) => {
     res.json(serializeFarm(res.farm))
   })
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     FarmsService.deleteFarm(
       req.app.get('db'),
       req.params.id
