@@ -30,18 +30,18 @@ VALUES
 
 INSERT INTO users (user_name, password, first_name, last_name, user_type)
   VALUES
-  ('PineRidgeBeef', 'beefPassword', 'Toby', 'Buchanan', 'Farmer'),
-  ('AldridgeAcres', 'produce123', 'Loriabelle', 'Aldridge', 'Farmer'),
-  ('OQuigleyFoods', 'eatmorecrabs', 'Homer', 'Bauer', 'Farmer'),
-  ('TreasureFarms', 'eatmoretreasure', 'Finley', 'Hayes', 'Farmer'),
-  ('RexYates', 'yatesisgreats', 'Elrod', 'Yates', 'Farmer'),
-  ('HappyHen', 'chikin93', 'Lawrence', 'Dixon', 'Farmer'),
-  ('GrandView', 'silverbelles', 'Wade', 'Compton', 'Farmer'),
-  ('BreezyHillsFarms', 'crackedpecans', 'Jamari', 'Hodge', 'Farmer'),
-  ('Bullseye', 'forrest321', 'Forrest', 'Mason', 'Farmer'),
-  ('ClaytonsGoat', 'greatestofalltime', 'Clayton', 'Edwards', 'Farmer'),
-  ('consumer1', 'password', 'David', 'Smith', 'Consumer'),
-  ('consumer2', 'password987', 'Mallory', 'Taylor', 'Consumer');
+  ('PineRidgeBeef', '$2a$12$wLnGTblsC1yJVpvsw/p8ouv6lFYxSLaitBiWs58CDxE01QzXmH8hC', 'Toby', 'Buchanan', 'Farmer'),
+  ('AldridgeAcres', '$2a$12$aQ4vbsoczNISgraVxfX4eO.t7Y3KoWJPxIESQlB.aoN9x1bJbJvg.', 'Loriabelle', 'Aldridge', 'Farmer'),
+  ('OQuigleyFoods', '$2a$12$b7g6Cy1AqCFu0vNuG1xUvOO06osoe/SieXorgbU.0xL954tQsvN8K', 'Homer', 'Bauer', 'Farmer'),
+  ('TreasureFarms', '$2a$12$MYfJmAaBqBzeN4HkaLeqJuiS5Bo3nGO34/A7rJMF31tw0BkgsdImO', 'Finley', 'Hayes', 'Farmer'),
+  ('RexYates', '$2a$12$QWVcs6jR8Zl5T3d2RRAil.WQF319th0sCBy9oYSD7.UT80dBUnu9S', 'Elrod', 'Yates', 'Farmer'),
+  ('HappyHen', '$2a$12$T10z7VhzuQPz3F1UWlHL6ONzs4ebcDGFN9MyPVNYZriZHGYhF8qpe', 'Lawrence', 'Dixon', 'Farmer'),
+  ('GrandView', '$2a$12$oSNcyQTNO3hSBz7lpvBWr.RUZ5Y6ShpSROWhxdt.uTYrI5OPAyxxW', 'Wade', 'Compton', 'Farmer'),
+  ('BreezyHillsFarms', '$2a$12$NXz/.dnIva/R2LWYvrXMEungQvZkZsDZ.L6LGpHZUX1EVk9Qa5Qke', 'Jamari', 'Hodge', 'Farmer'),
+  ('Bullseye', '$2a$12$ZX6sdijA55ChxMv0NPFwWuOWWQoVgE5pveMRTjnMVQw6DVnRkQE7O', 'Forrest', 'Mason', 'Farmer'),
+  ('ClaytonsGoat', '$2a$12$M2MZml/nMyMCNs5qXakAUuKVUlnwpF44hiTFgnH8/ggFQeW8WQ3su', 'Clayton', 'Edwards', 'Farmer'),
+  ('consumer1', '$2a$12$2G8esEvUZdLKJ4iIN.74E.wXofmdqxlWfVkjnfG.1GNFR5WEBQJdS', 'David', 'Smith', 'Consumer'),
+  ('consumer2', '$2a$12$c3jd0K.sf1KsdMzSe62OmeMtkqWx.LChLGw7k.eBBBvnOP488bXFe', 'Mallory', 'Taylor', 'Consumer');
 
 INSERT INTO favorites (favorited_farm, favorited_by)
   VALUES
