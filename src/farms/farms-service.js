@@ -1,8 +1,16 @@
 const FarmsService = {
   getAllFarms(knex) {
     return knex
-      .select('*')
+      .select('farms.*',
+        knex.raw(`count(DISTINCT favorites) AS number_of_favorites`)
+      )
       .from('farms')
+      .leftJoin(
+        'favorites',
+        'farms.id',
+        'favorites.favorited_farm'
+      )
+      .groupBy('farms.id')
   },
   getFarmsBySearchTerm(knex, query) {
     return knex

@@ -9,6 +9,7 @@ const { requireAuth } = require('../middleware/jwt-auth')
 const serializeFarm = farm => ({
   id: farm.id,
   farm_name: xss(farm.farm_name),
+  number_of_favorites: farm.number_of_favorites,
   products: farm.products,
   farm_description: xss(farm.farm_description),
   address_1: xss(farm.address_1),
@@ -171,20 +172,5 @@ farmsRouter
       })
       .catch(next)
   })
-
-  // TODO: I want to create a new route to be able to get all the products. Tried to test various queries in knex/postgresql, found one that worked in postgres but unable to set this up to see if it works in knex as well.
-farmsRouter
-  .route('/products')
-  .get((req, res, next) => {
-    res.json({ message: true })
-    // FarmsService.getAllFarms(req.app.get('db'))
-    // .then(farms => {
-    //   res.json(farms)
-    // })
-    // .catch(next)
-  })
-
-// farmsRouter
-//   .route('/purchase-categories')
 
   module.exports = farmsRouter
