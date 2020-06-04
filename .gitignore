@@ -1,6 +1,4 @@
 node_modules
 .env
 
-src/favorites
-src/reviews
-src/users
+Routers.txt

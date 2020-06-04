@@ -8,6 +8,9 @@ const { NODE_ENV } = require('./config')
 const farmsRouter = require('./farms/farms-router')
 const productsRouter = require('./products/products-router')
 const purchaseOptionsRouter = require('./purchaseOptions/purchaseOptions-router')
+const favoritesRouter = require('./favorites/favorites-router')
+const usersRouter = require('./users/users-router')
+const authRouter = require('./auth/auth-router')
 
 const app = express()
 
@@ -22,9 +25,12 @@ app.use(cors())
 app.use('/api/farms', farmsRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/purchase-options', purchaseOptionsRouter)
+app.use('/api/favorites', favoritesRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/auth', authRouter)
 
 app.get('/', (req, res) => {
-  res.send('Hello FarmPicks API!')
+  res.send('Hello FarmPicks!')
 })
 
 app.use(function errorHandler(error, req, res, next) {

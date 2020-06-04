@@ -4,18 +4,19 @@ const FarmsService = require('./farms-service')
 const path = require('path')
 const farmsRouter = express.Router()
 const jsonParser = express.json()
+const { requireAuth } = require('../middleware/jwt-auth')
 
 const serializeFarm = farm => ({
-  // TODO: Should I worry about the arrays being protected from xss attacks?
   id: farm.id,
   farm_name: xss(farm.farm_name),
+  number_of_favorites: farm.number_of_favorites,
   products: farm.products,
   farm_description: xss(farm.farm_description),
   address_1: xss(farm.address_1),
   address_2: xss(farm.address_2),
   city: xss(farm.city),
   state: xss(farm.state),
-  zip_code: farm.zip_code,
+  zip_code: xss(farm.zip_code),
   contact_name: xss(farm.contact_name),
   phone_number: xss(farm.phone_number),
   purchase_options: farm.purchase_options,
@@ -36,7 +37,6 @@ farmsRouter
           res.json(farms.map(serializeFarm))
         })
     } else if (req.query.products) {
-      // TODO: see if you can get it to work with a comma-delimited list of product categories
       const queryProducts = req.query.products.toLowerCase()
       const validProductCategories = [`meat/poultry`, `seafood`, `dairy`, `eggs`, `produce`, `plants`, `preserves/syrup`, `bee products`, `nuts/dried fruits`, `prepared foods`, `coffee/tea`, `bath & body products`]
       if (!validProductCategories.includes(queryProducts)) {
@@ -49,7 +49,6 @@ farmsRouter
           res.json(farms.map(serializeFarm))
         })
     } else if (req.query.purchaseOptions) {
-      // TODO: see if you can get it to work with a comma-delimited list of purchase options
       const queryPurchaseOptions = req.query.purchaseOptions.toLowerCase()
       const validPurchaseOptionsCategories = [`shipping`, `delivery`, `pick-up`, `farmers market`]
       if (!validPurchaseOptionsCategories.includes(queryPurchaseOptions)) {
@@ -69,7 +68,7 @@ farmsRouter
       .catch(next)
     }
   })
-  .post(jsonParser, (req, res, next) => {
+  .post(requireAuth, jsonParser, (req, res, next) => {
     const { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived } = req.body
     const newFarm = { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived }
     const farmArrays = { products, purchase_options }
@@ -134,7 +133,7 @@ farmsRouter
   .get((req, res, next) => {
     res.json(serializeFarm(res.farm))
   })
-  .delete((req, res, next) => {
+  .delete(requireAuth, (req, res, next) => {
     FarmsService.deleteFarm(
       req.app.get('db'),
       req.params.id
@@ -144,7 +143,7 @@ farmsRouter
       })
       .catch(next)
   })
-  .patch(jsonParser, (req, res, next) => {
+  .patch(requireAuth, jsonParser, (req, res, next) => {
     const { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived } = req.body
     const farmToUpdate = { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived }
     
@@ -173,20 +172,5 @@ farmsRouter
       })
       .catch(next)
   })
-
-  // TODO: I want to create a new route to be able to get all the products. Tried to test various queries in knex/postgresql, found one that worked in postgres but unable to set this up to see if it works in knex as well.
-farmsRouter
-  .route('/products')
-  .get((req, res, next) => {
-    res.json({ message: true })
-    // FarmsService.getAllFarms(req.app.get('db'))
-    // .then(farms => {
-    //   res.json(farms)
-    // })
-    // .catch(next)
-  })
-
-// farmsRouter
-//   .route('/purchase-categories')
 
   module.exports = farmsRouter

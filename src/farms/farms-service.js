@@ -1,16 +1,17 @@
 const FarmsService = {
   getAllFarms(knex) {
     return knex
-      .select('*')
+      .select('farms.*',
+        knex.raw(`count(DISTINCT favorites) AS number_of_favorites`)
+      )
       .from('farms')
+      .leftJoin(
+        'favorites',
+        'farms.id',
+        'favorites.favorited_farm'
+      )
+      .groupBy('farms.id')
   },
-  // getAllProductCategories(knex) {
-  //   return knex
-  //     .select('*')
-  //     .from('farms')
-  //   // knex.raw('SELECT ARRAY(SELECT UNNEST(products) FROM  farms)')
-  //   // knex.raw('SELECT DISTINCT unnest(products) FROM farms')
-  // },
   getFarmsBySearchTerm(knex, query) {
     return knex
       .select('*')
@@ -45,8 +46,16 @@ const FarmsService = {
   getFarmById(knex, id) {
     return knex
       .from('farms')
-      .select('*')
-      .where('id', id)
+      .select('farms.*',
+        knex.raw(`count(DISTINCT favorites) AS number_of_favorites`)
+      )
+      .where('farms.id', id)
+      .leftJoin(
+        'favorites',
+        'farms.id',
+        'favorites.favorited_farm'
+      )
+      .groupBy('farms.id')
       .first()
   },
   deleteFarm(knex, id) {
