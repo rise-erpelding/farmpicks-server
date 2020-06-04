@@ -6,13 +6,20 @@ const UsersService = {
         'users.first_name',
         'users.last_name',
         'users.user_type',
+        'users.id'
       )
       .from('users')
       .where('users.id', userId)
   },
   getUserFavorites(knex, userId) {
     return knex
-      .select('farms.id', 'farms.farm_name')
+      .select(
+        'farms.id', 
+        'farms.farm_name',
+        'farms.products',
+        'farms.farm_description',
+        'farms.profile_image'
+      )
       .from('farms')
       .join(
         'favorites',

@@ -1,17 +1,17 @@
 const express = require('express')
 const UsersService = require('./users-service')
 const usersRouter = express.Router()
-const path = require('path')
+// const path = require('path')
 const jsonParser = express.json()
 const { requireAuth } = require('../middleware/jwt-auth')
 
 usersRouter
-  .route('/:id')
-  .get((req, res, next) => {
+  .route('/')
+  .get(requireAuth, jsonParser, (req, res, next) => {
     //some validations
     UsersService.getUserById(
       req.app.get('db'),
-      req.params.id
+      req.user.id
     )
       .then(user => {
         if (!user) {
@@ -28,12 +28,12 @@ usersRouter
   })
 
 usersRouter
-  .route('/:id/favorites')
-  .get((req, res, next) => {
+  .route('/favorites')
+  .get(requireAuth, jsonParser, (req, res, next) => {
     //some validations
     UsersService.getUserFavorites(
       req.app.get('db'),
-      req.params.id
+      req.user.id
     )
       .then(favorites => {
         res.json(favorites)
