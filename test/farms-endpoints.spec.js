@@ -38,16 +38,16 @@ describe('Farms Endpoints', function() {
       })
     })
 
-    context(`Given there are farms in the database`, () => {
+    context.only(`Given there are farms in the database`, () => {
 
       beforeEach('insert farms, favorites, and users', () =>
-      helpers.seedFarmpicksTables(
-        db,
-        testUsers,
-        testFarms,
-        testFavorites,
+        helpers.seedFarmpicksTables(
+          db,
+          testUsers,
+          testFarms,
+          testFavorites,
+        )
       )
-    )
 
       it(`responds with 200 and all of the farms`, () => {
         const expectedFarms = testFarms
@@ -71,16 +71,6 @@ describe('Farms Endpoints', function() {
           .expect(200, [expectedFarm])
       })
 
-      it(`searches for farms selling a selected product category`, () => {
-        const productsQuery = 'produce'
-        const expectedFarm = testFarms[1]
-        expectedFarm.number_of_favorites = '1'
-        return supertest(app)
-          .get(`/api/farms`)
-          .query(`products=${productsQuery}`)
-          .expect(200, [expectedFarm])
-      })
-
       it(`searches for farms offering a selected purchase option category`, () => {
         const purchaseOptionsQuery = 'delivery'
         const expectedFarm = [testFarms[0], testFarms[1]]
@@ -90,6 +80,16 @@ describe('Farms Endpoints', function() {
           .get(`/api/farms`)
           .query(`purchaseOptions=${purchaseOptionsQuery}`)
           .expect(200, expectedFarm)
+      })
+
+      it(`searches for farms selling a selected product category`, () => {
+        const productsQuery = 'produce'
+        const expectedFarm = testFarms[1]
+        expectedFarm.number_of_favorites = '1'
+        return supertest(app)
+          .get(`/api/farms`)
+          .query(`products=${productsQuery}`)
+          .expect(200, [expectedFarm])
       })
 
       it(`allows multiple queries`, () => {
@@ -171,190 +171,209 @@ describe('Farms Endpoints', function() {
       })
     })
   })
-  // TODO: start here
-  // describe(`POST /api/farms`, () => {
-  //   it(`creates a new farm, responding with 201 and the new farm`, () => {
-  //     const newFarm = {
-  //       farm_name: 'New Farm',
-  //       address_1: '123 Test',
-  //       city: 'Testy',
-  //       state: 'FL',
-  //       phone_number: '555-1234',
-  //       farm_description: 'Test description test test',
-  //       products: ["Produce", "Bee Products"]
-  //     }
-  //     return supertest(app)
-  //       .post(`/api/farms`)
-  //       .send(newFarm)
-  //       .expect(201)
-  //       .expect(res => {
-  //         expect(res.body.farm_name).to.eql(newFarm.farm_name)
-  //         expect(res.body.address_1).to.eql(newFarm.address_1)
-  //         expect(res.body.city).to.eql(newFarm.city)
-  //         expect(res.body.state).to.eql(newFarm.state)
-  //         expect(res.body.phone_number).to.eql(newFarm.phone_number)
-  //         expect(res.body.farm_description).to.eql(newFarm.farm_description)
-  //         //This potentially needs to be changed because deep eql?
-  //         expect(res.body.products).to.eql(newFarm.products)
-  //         expect(res.body).to.have.property('id')
-  //         expect(res.headers.location).to.eql(`/api/farms/${res.body.id}`)
-  //         const expectedDate = new Intl.DateTimeFormat('en-US').format(new Date())
-  //         const actualDate = new Intl.DateTimeFormat('en-US').format(new Date(res.body.date_modified))
-  //         expect(actualDate).to.eql(expectedDate)
-  //       })
-  //   })
 
-  //   it(`responds with 400 and an error message when the 'farm_name' is missing`, () => {
-  //     const noNameFarm = { farm_description: 'Something not quite right here.' }
-  //     return supertest(app)
-  //       .post(`/api/farms`)
-  //       .send(noNameFarm)
-  //       .expect(400, {
-  //         error: { message: `Missing 'farm_name' in request body` }
-  //       })
-  //   })
 
-  //   it(`responds with 400 and an error message when 'products' or 'purchase_options' is not an array`, () => {
-  //     const productsFarm = {
-  //       farm_name: 'TestFarm',
-  //       products: 'nope'
-  //     }
-  //     const purchaseOptionsFarm = {
-  //       farm_name: 'TestFarm',
-  //       purchase_options: {also: 'not good'}
-  //     }
+  describe(`POST /api/farms`, () => {
 
-  //     return supertest(app)
-  //       .post(`/api/farms`)
-  //       .send(productsFarm)
-  //       .expect(400, {
-  //         error: { message: `'products' must be an array` }
-  //       })
-  //       .then(res => {
-  //         return supertest(app)
-  //           .post(`/api/farms`)
-  //           .send(purchaseOptionsFarm)
-  //           .expect(400, {
-  //             error: { message: `'purchase_options' must be an array` }
-  //           })
-  //       })
-  //   })
+    beforeEach('insert farms, favorites, and users', () =>
+    helpers.seedFarmpicksTables(
+      db,
+      testUsers,
+      testFarms,
+      testFavorites,
+    )
+  )
+
+    it(`creates a new farm, responding with 201 and the new farm`, () => {
+      const newFarm = {
+        farm_name: 'New Farm',
+        address_1: '123 Test',
+        city: 'Testy',
+        state: 'FL',
+        zip_code: '12345',
+        phone_number: '555-1234',
+        farm_description: 'Test description test test',
+        products: ["produce", "bee products"],
+        purchase_options: ["delivery", "farmers market"]
+      }
+      return supertest(app)
+        .post(`/api/farms`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+        .send(newFarm)
+        .expect(201)
+        .expect(res => {
+          expect(res.body.farm_name).to.eql(newFarm.farm_name)
+          expect(res.body.address_1).to.eql(newFarm.address_1)
+          expect(res.body.city).to.eql(newFarm.city)
+          expect(res.body.state).to.eql(newFarm.state)
+          expect(res.body.zip_code).to.eql(newFarm.zip_code)
+          expect(res.body.phone_number).to.eql(newFarm.phone_number)
+          expect(res.body.farm_description).to.eql(newFarm.farm_description)
+          expect(res.body.products).to.eql(newFarm.products)
+          expect(res.body.purchase_options).to.eql(newFarm.purchase_options)
+          expect(res.body).to.have.property('id')
+          expect(res.headers.location).to.eql(`/api/farms/${res.body.id}`)
+          const expectedDate = new Intl.DateTimeFormat('en-US').format(new Date())
+          const actualDate = new Intl.DateTimeFormat('en-US').format(new Date(res.body.date_modified))
+          expect(actualDate).to.eql(expectedDate)
+        })
+    })
+
+    it(`responds with 400 and an error message when the 'farm_name' is missing`, () => {
+      const noNameFarm = { farm_description: 'Something not quite right here.' }
+      return supertest(app)
+        .post(`/api/farms`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+        .send(noNameFarm)
+        .expect(400, {
+          error: { message: `Missing 'farm_name' in request body` }
+        })
+    })
+
+    it(`responds with 400 and an error message when 'products' or 'purchase_options' is not an array`, () => {
+      const productsFarm = {
+        farm_name: 'TestFarm',
+        products: 'nope'
+      }
+      const purchaseOptionsFarm = {
+        farm_name: 'TestFarm',
+        purchase_options: {also: 'not good'}
+      }
+
+      return supertest(app)
+        .post(`/api/farms`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+        .send(productsFarm)
+        .expect(400, {
+          error: { message: `'products' must be an array` }
+        })
+        .then(res => {
+          return supertest(app)
+            .post(`/api/farms`)
+            .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+            .send(purchaseOptionsFarm)
+            .expect(400, {
+              error: { message: `'purchase_options' must be an array` }
+            })
+        })
+    })
   
 
-  //   it(`removes XSS attack content from response`, () => {
-  //     const { maliciousFarm, sanitizedFarm } = makeMaliciousFarm()
-  //     return supertest(app)
-  //       .post(`/api/farms`)
-  //       .send(maliciousFarm)
-  //       .expect(201)
-  //       .expect(res => {
-  //         expect(res.body.address_1).to.eql(sanitizedFarm.address_1)
-  //         expect(res.body.farm_description).to.eql(sanitizedFarm.farm_description)
-  //       })
-  //   })
-  // })
+    it(`removes XSS attack content from response`, () => {
+      const { maliciousFarm, sanitizedFarm } = helpers.makeMaliciousFarm()
+      return supertest(app)
+        .post(`/api/farms`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+        .send(maliciousFarm)
+        .expect(201)
+        .expect(res => {
+          expect(res.body.address_1).to.eql(sanitizedFarm.address_1)
+          expect(res.body.farm_description).to.eql(sanitizedFarm.farm_description)
+        })
+    })
+  })
 
-  // describe(`DELETE /api/farms/:id`, () => {
-  //   context(`Given no farms in the database`, () => {
-  //     it(`responds with 404`, () => {
-  //       const nonexistentFarmId = 99999
-  //       return supertest(app)
-  //         .delete(`/api/farms/${nonexistentFarmId}`)
-  //         .expect(404, { error: { message: `Farm does not exist` } })
-  //     })
-  //   })
+  describe(`DELETE /api/farms/:id`, () => {
 
-  //   context(`Given there are farms in the database`, () => {
-  //     const testFarms = makeFarmsArray()
-      
-  //     beforeEach(`insert farms`, () => {
-  //       return db
-  //         .into('farms')
-  //         .insert(testFarms)
-  //     })
+    context(`Given no farms in the database`, () => {
+      it(`responds with 404`, () => {
+        const nonexistentFarmId = 99999
+        return supertest(app)
+          .delete(`/api/farms/${nonexistentFarmId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+          .expect(404, { error: { message: `Farm does not exist` } })
+      })
+    })
 
-  //     it(`responds with 204 and removes the farm`, () => {
-  //       const idToRemove = 2
-  //       const expectedFarms = testFarms.filter(farm => farm.id !== idToRemove)
-  //       return supertest(app)
-  //         .delete(`/api/farms/${idToRemove}`)
-  //         .expect(204)
-  //         .then(res =>
-  //           supertest(app)
-  //             .get(`/api/farms`)
-  //             .expect(expectedFarms)
-  //         )
-  //     })
-  //   })
-  // })
+    context(`Given there are farms in the database`, () => {
 
-  // describe(`PATCH /api/farms/:id`, () => {
-  //   const farmUpdateFields = {
-  //     farm_name: "Test Farm",
-  //     address_2: "Test address 2",
-  //     farm_description: "Test farm description"
-  //   }
-  //   context(`Given there are no farms in the database`, () => {
-  //     it(`responds with 404`, () => {
-  //       const nonexistentFarmId = 9999
-  //       return supertest(app)
-  //         .patch(`/api/farms/${nonexistentFarmId}`)
-  //         .send(farmUpdateFields)
-  //         .expect(404, { error: { message: `Farm does not exist` } })
-  //     })
-  //   })
+      beforeEach('insert farms, favorites, and users', () =>
+      helpers.seedFarmpicksTables(
+        db,
+        testUsers,
+        testFarms,
+        testFavorites,
+      )
+    )
 
-  //   context(`Given there are farms in the database`, () => {
-  //     const testFarms = makeFarmsArray()
-  //     const idToUpdate = 2
+      it(`if farm is not referenced in table 'favorites', responds with 204 and removes the farm`, () => {
+        const idToRemove = 3
+        const expectedFarms = testFarms.filter(farm => farm.id !== idToRemove)
+        expectedFarms[0].number_of_favorites = '2'
+        expectedFarms[1].number_of_favorites = '1'
+        expectedFarms[2].number_of_favorites = '2'
+        return supertest(app)
+          .delete(`/api/farms/${idToRemove}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/farms`)
+              .expect(expectedFarms)
+          )
+      })
+    })
+  })
 
-  //     beforeEach(`insert farms`, () => {
-  //       return db
-  //         .into('farms')
-  //         .insert(testFarms)
-  //     })
+  describe(`PATCH /api/farms/:id`, () => {
+    const farmUpdateFields = {
+      farm_name: "Test Farm",
+      address_2: "Test address 2",
+      farm_description: "Test farm description"
+    }
+    context(`Given there are no farms in the database`, () => {
+      it(`responds with 404`, () => {
+        const nonexistentFarmId = 9999
+        return supertest(app)
+          .patch(`/api/farms/${nonexistentFarmId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+          .send(farmUpdateFields)
+          .expect(404, { error: { message: `Farm does not exist` } })
+      })
+    })
 
-  //     it(`responds with 204 and updates the farm`, () => {
-  //       return supertest(app)
-  //         .patch(`/api/farms/${idToUpdate}`)
-  //         .send(farmUpdateFields)
-  //         .expect(204)
-  //         .then(res => {
-  //           supertest(app)
-  //             .get(`/api/farms/${idToUpdate}`)
-  //             .expect(res => {
-  //               expect(res.body.farm_name).to.eql(farmUpdateFields.farm_name)
-  //               expect(res.body.address_2).to.eql(farmUpdateFields.address_2)
-  //               expect(res.body.farm_description).to.eql(farmUpdateFields.farm_description)
-  //               expect(res.body.contact_name).to.eql(testFarms[idToUpdate - 1].contact_name)
-  //             })
-  //         })
-  //     })
+    context(`Given there are farms in the database`, () => {
+      const idToUpdate = 2
 
-  //     it(`responds with 400 if request body does not contain any appropriate fields to patch`, () => {
-  //       const invalidUpdateFields = { banana: 'Hello', potato: 'Goodbye' }
-  //       return supertest(app)
-  //         .patch(`/api/farms/${idToUpdate}`)
-  //         .send(invalidUpdateFields)
-  //         .expect(400, { error: {
-  //           message: `Request body must contain 'farm_name', 'products', 'farm_description', 'address_1', 'address_2', 'city', 'state', 'zip_code', 'contact_name', 'phone_number', 'purchase_options', 'purchase_details', 'website', 'cover_image', 'profile_image', or 'archived'` } })
-  //     })
+      beforeEach('insert farms, favorites, and users', () =>
+      helpers.seedFarmpicksTables(
+        db,
+        testUsers,
+        testFarms,
+        testFavorites,
+      )
+    )
 
-  //     it(`updates the date and time each time the farm is updated`, () => {
-  //       return supertest(app)
-  //         .patch(`/api/farms/${idToUpdate}`)
-  //         .send(farmUpdateFields)
-  //         .expect(204)
-  //         .then(res => {
-  //           supertest(app)
-  //             .get(`/api/farms/${idToUpdate}`)
-  //             .expect(res => {
-  //               expect(res.body.date_modified).to.not.eql(testFarms[idToUpdate - 1].date_modified)
-  //             })
-  //         })
-  //     })
-  //   })
-  // })
+      it(`responds with 204 and updates the farm`, () => {
+        return supertest(app)
+          .patch(`/api/farms/${idToUpdate}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+          .send(farmUpdateFields)
+          .expect(204)
+          .then(res => {
+            supertest(app)
+              .get(`/api/farms/${idToUpdate}`)
+              .expect(res => {
+                res.body.farm_name = farmUpdateFields.farm_name
+                res.body.address_2 = farmUpdateFields.address_2
+                res.body.farm_description = farmUpdateFields.farm_description
+                res.body.contact_name = testFarms[idToUpdate - 1].contact_name
+              })
+              .expect(200)
+          })
+      })
+
+      it(`responds with 400 if request body does not contain any appropriate fields to patch`, () => {
+        const invalidUpdateFields = { banana: 'Hello', potato: 'Goodbye' }
+        return supertest(app)
+          .patch(`/api/farms/${idToUpdate}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+          .send(invalidUpdateFields)
+          .expect(400, { error: {
+            message: `Request body must contain 'farm_name', 'products', 'farm_description', 'address_1', 'address_2', 'city', 'state', 'zip_code', 'contact_name', 'phone_number', 'purchase_options', 'purchase_details', 'website', 'cover_image', 'profile_image', or 'archived'` } })
+      })
+    })
+  })
 
   //TEST FOR GET api/products
 
