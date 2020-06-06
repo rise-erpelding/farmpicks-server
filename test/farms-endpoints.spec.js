@@ -1,8 +1,6 @@
 // const knex = require('knex')
 // const app = require('../src/app')
 
-// // TODO: Figure out why this won't migrate
-
 // const { makeFarmsArray, makeMaliciousFarm } = require('./test-helpers')
 
 // describe('Farms Endpoints', function() {
@@ -12,6 +10,10 @@
 //     db = knex({
 //       client: 'pg',
 //       connection: process.env.TEST_DATABASE_URL,
+//       pool: {
+//         min: 0,
+//         max: 7
+//       }
 //     })
 //     app.set('db', db)
 //   })
