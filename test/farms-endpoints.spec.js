@@ -107,58 +107,71 @@ describe('Farms Endpoints', function() {
       })
 
     })
-    // TODO: start here
+
     context(`Given an XSS attack farm`, () => {
       // const testFarms = makeFarmsArray()
-      // const { maliciousFarm, sanitizedFarm } = makeMaliciousFarm()
+      const { maliciousFarm, sanitizedFarm } = helpers.makeMaliciousFarm()
+
+      beforeEach('insert farms, favorites, and users', () =>
+        helpers.seedFarmpicksTables(
+          db,
+          testUsers,
+          testFarms,
+          testFavorites,
+        )
+      )
 
       beforeEach(`insert malicious farm`, () => {
         return db
           .into('farms')
-          .insert([ maliciousFarm ])
+          .insert([maliciousFarm])
       })
 
-      it.skip(`removes XSS attack content`, () => {
+      it(`removes XSS attack content`, () => {
         return supertest(app)
           .get(`/api/farms`)
           .expect(200)
           .expect(res => {
-            expect(res.body[0].address_1).to.eql(sanitizedFarm.address_1)
-            expect(res.body[0].farm_description).to.eql(sanitizedFarm.farm_description)
+            expect(res.body[4].address_1).to.eql(sanitizedFarm.address_1)
+            expect(res.body[4].farm_description).to.eql(sanitizedFarm.farm_description)
           })
       })
     })
   })
 
-  // describe(`GET /api/farms/:id`, () => {
-  //   context(`Given no farms in the database`, () => {
-  //     it(`responds with 404`, () => {
-  //       const nonexistentFarmId = 99999
-  //       return supertest(app)
-  //         .get(`/api/farms/${nonexistentFarmId}`)
-  //         .expect(404, { error: { message: `Farm does not exist` } })
-  //     })
-  //   })
+  describe(`GET /api/farms/:id`, () => {
+    context(`Given no farms in the database`, () => {
+      it(`responds with 404`, () => {
+        const nonexistentFarmId = 99999
+        return supertest(app)
+          .get(`/api/farms/${nonexistentFarmId}`)
+          .expect(404, { error: { message: `Farm does not exist` } })
+      })
+    })
 
-  //   context(`Given there are farms in the database`, () => {
-  //     const testFarms = makeFarmsArray();
+    context(`Given there are farms in the database`, () => {
+      const testFarms = helpers.makeFarmsArray();
       
-  //     beforeEach(`insert farms`, () => {
-  //       return db
-  //         .into('farms')
-  //         .insert(testFarms)
-  //     })
+      beforeEach('insert farms, favorites, and users', () =>
+        helpers.seedFarmpicksTables(
+          db,
+          testUsers,
+          testFarms,
+          testFavorites,
+        )
+      )
 
-  //     it(`responds with 200 and the specified farm`, () => {
-  //       const farmId = 2
-  //       const expectedFarm = testFarms[farmId - 1]
-  //       return supertest(app)
-  //         .get(`/api/farms/${farmId}`)
-  //         .expect(200, expectedFarm)
-  //     })
-  //   })
-  // })
-
+      it(`responds with 200 and the specified farm`, () => {
+        const farmId = 2
+        const expectedFarm = testFarms[farmId - 1]
+        expectedFarm.number_of_favorites = '1'
+        return supertest(app)
+          .get(`/api/farms/${farmId}`)
+          .expect(200, expectedFarm)
+      })
+    })
+  })
+  // TODO: start here
   // describe(`POST /api/farms`, () => {
   //   it(`creates a new farm, responding with 201 and the new farm`, () => {
   //     const newFarm = {

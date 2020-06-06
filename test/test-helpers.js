@@ -114,7 +114,6 @@ function makeFarmsArray() {
 
 function makeMaliciousFarm() {
   const maliciousFarm = {
-    id: 1,
     farm_name: "Bad Seed Farm",
     address_1: `Not actually an address <script>alert("xss");</script>`,
     address_2: "",
@@ -136,7 +135,8 @@ function makeMaliciousFarm() {
   const sanitizedFarm = {
     ...maliciousFarm,
     address_1: `Not actually an address &lt;script&gt;alert("xss");&lt;/script&gt;`,
-    farm_description: `<strong>Not</strong> a description here either <img src="https://url.to.file.which/does-not.exist">`
+    farm_description: `<strong>Not</strong> a description here either <img src="https://url.to.file.which/does-not.exist">`,
+    number_of_favorites: '0'
   }
   return {
     maliciousFarm,
