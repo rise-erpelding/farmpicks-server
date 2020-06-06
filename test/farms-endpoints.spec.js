@@ -29,27 +29,9 @@ describe('Farms Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
-  // beforeEach('insert users', () => {
-  //   return db
-  //     .into('users')
-  //     .insert(testUsers)
-  // })
-
-  // beforeEach('insert farms', () => {
-  //   return db
-  //     .into('farms')
-  //     .insert(testFarms)
-  // })
-
-  // beforeEach('insert favorites', () => {
-  //   return db
-  //     .into('favorites')
-  //     .insert(testFavorites)
-  // })
-
-  describe.skip(`GET /api/farms`, () => {
+  describe(`GET /api/farms`, () => {
     context(`Given no farms in the database`, () => {
-      it.skip(`responds with 200 and an empty list`, () => {
+      it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get(`/api/farms`)
           .expect(200, [])
@@ -58,28 +40,25 @@ describe('Farms Endpoints', function() {
 
     context(`Given there are farms in the database`, () => {
 
-      beforeEach('insert farms', () => {
-        return db
-          .into('farms')
-          .insert(testFarms)
-      })
+      beforeEach('insert farms, favorites, and users', () =>
+      helpers.seedFarmpicksTables(
+        db,
+        testUsers,
+        testFarms,
+        testFavorites,
+      )
+    )
 
-      beforeEach('insert users', () => {
-        return db
-          .into('users')
-          .insert(testUsers)
-      })
-
-      beforeEach('insert favorites', () => {
-        return db
-          .into('favorites')
-          .insert(testFavorites)
-      })
-
-      it.skip(`responds with 200 and all of the farms`, () => {
+      it.only(`responds with 200 and all of the farms`, () => {
+        const expectedFarms = testFarms
+          .map(farm =>
+              helpers.makeExpectedFarm(
+                farm,
+                testFavorites
+              ))
         return supertest(app)
           .get(`/api/farms`)
-          .expect(200, testFarms)
+          .expect(200, expectedFarms)
       })
 
       it(`searches for farms that contain a query term q in the name, description, purchase details, contact name, or city`, () => {

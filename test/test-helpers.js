@@ -6,7 +6,6 @@ function makeFarmsArray() {
     {
       id: 1,
       farm_name: "Pine Ridge Beef",
-      // number_of_favorites: "2",
       products: [
         "meat/poultry",
         "prepared foods"
@@ -35,7 +34,6 @@ function makeFarmsArray() {
     {
       id: 2,
       farm_name: "Aldridge Acres",
-      // number_of_favorites: "1",
       products: [
         "produce",
         "eggs"
@@ -62,7 +60,6 @@ function makeFarmsArray() {
     {
       id: 3,
       farm_name: "O'Quigley Foods",
-      // number_of_favorites: "0",
       products: [
         "seafood",
         "prepared foods"
@@ -89,7 +86,6 @@ function makeFarmsArray() {
     {
       id: 4,
       farm_name: "Treasure Farms",
-      // number_of_favorites: "2",
       products: [
         "bee products",
         "bath & body products"
@@ -219,17 +215,17 @@ function seedUsers(db, users) {
     password: bcrypt.hashSync(user.password, 1)
   }))
   return db.into('users').insert(preppedUsers)
-    // .then(() =>
-    //   // update the auto sequence to stay in sync
-    //   db.raw(
-    //     `SELECT setval('blogful_users_id_seq', ?)`,
-    //     [users[users.length - 1].id],
-    //   )
-    // )
+    .then(() =>
+      // update the auto sequence to stay in sync
+      db.raw(
+        `SELECT setval('users_id_seq', ?)`,
+        [users[users.length - 1].id],
+      )
+    )
 }
 
 function makeFavoritesArray() {
-  [
+  return [
     {
       id: 1,
       favorited_farm: 1,
@@ -322,6 +318,35 @@ function makeFarmsFixtures() {
   return { testUsers, testFarms, testFavorites }
 }
 
+function makeExpectedFarm(farm, favorites) {
+  const number_of_favorites = favorites
+    .filter(favorite => favorite.favorited_farm === farm.id)
+    .length
+    .toString()
+
+  return {
+    id: farm.id,
+    farm_name: farm.farm_name,
+    number_of_favorites,
+    products: farm.products,
+    farm_description: farm.farm_description,
+    address_1: farm.address_1,
+    address_2: farm.address_2,
+    city: farm.city,
+    state: farm.state,
+    zip_code: farm.zip_code,
+    contact_name: farm.contact_name,
+    phone_number: farm.phone_number,
+    purchase_options: farm.purchase_options,
+    purchase_details: farm.purchase_details,
+    website: farm.website,
+    cover_image: farm.cover_image,
+    profile_image: farm.profile_image,
+    date_modified: farm.date_modified,
+    archived: farm.archived
+  }
+}
+
 module.exports = {
   makeFarmsArray,
   makeMaliciousFarm,
@@ -332,4 +357,5 @@ module.exports = {
   seedFarmpicksTables,
   cleanTables,
   makeFarmsFixtures,
+  makeExpectedFarm
 }

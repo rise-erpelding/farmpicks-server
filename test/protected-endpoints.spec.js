@@ -31,13 +31,13 @@ describe('Protected endpoints', function() {
   afterEach('cleanup', () => helpers.cleanTables(db))
 
   beforeEach('insert farms, favorites, and users', () =>
-  helpers.seedFarmpicksTables(
-    db,
-    testUsers,
-    testFarms,
-    testFavorites,
+    helpers.seedFarmpicksTables(
+      db,
+      testUsers,
+      testFarms,
+      testFavorites,
+    )
   )
-)
 
   // beforeEach('insert users', () => {
   //   return db
