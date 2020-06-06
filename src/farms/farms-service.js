@@ -14,25 +14,49 @@ const FarmsService = {
   },
   getFarmsBySearchTerm(knex, query) {
     return knex
-      .select('*')
+      .select('farms.*',
+        knex.raw(`count(DISTINCT favorites) AS number_of_favorites`)
+      )
       .from('farms')
       .where('farm_name', 'ilike', '%' + query + '%')
       .orWhere('farm_description', 'ilike', '%' + query + '%')
       .orWhere('purchase_details', 'ilike', '%' + query + '%')
       .orWhere('contact_name', 'ilike', '%' + query + '%')
       .orWhere('city', 'ilike', '%' + query + '%')
+      .leftJoin(
+        'favorites',
+        'farms.id',
+        'favorites.favorited_farm'
+      )
+      .groupBy('farms.id')
   },
   getFarmsByProduct(knex, products) {
     return knex
-      .select('*')
+      .select('farms.*',
+        knex.raw(`count(DISTINCT favorites) AS number_of_favorites`)
+      )
       .from('farms')
       .where(knex.raw('? = ANY (products)', [products]))
+      .leftJoin(
+        'favorites',
+        'farms.id',
+        'favorites.favorited_farm'
+      )
+      .groupBy('farms.id')
   },
   getFarmsByPurchaseOptions(knex, purchaseOptions) {
     return knex
-      .select('*')
+      .select('farms.*',
+        knex.raw(`count(DISTINCT favorites) AS number_of_favorites`)
+      )
       .from('farms')
       .where(knex.raw('? = ANY (purchase_options)', [purchaseOptions]))
+      .leftJoin(
+        'favorites',
+        'farms.id',
+        'favorites.favorited_farm'
+      )
+      .groupBy('farms.id')
   },
   insertFarm(knex, newFarm) {
     return knex

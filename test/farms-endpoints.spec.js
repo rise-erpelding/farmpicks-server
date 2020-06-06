@@ -49,7 +49,7 @@ describe('Farms Endpoints', function() {
       )
     )
 
-      it.only(`responds with 200 and all of the farms`, () => {
+      it(`responds with 200 and all of the farms`, () => {
         const expectedFarms = testFarms
           .map(farm =>
               helpers.makeExpectedFarm(
@@ -63,43 +63,52 @@ describe('Farms Endpoints', function() {
 
       it(`searches for farms that contain a query term q in the name, description, purchase details, contact name, or city`, () => {
         const searchTerm = 'beef'
+        const expectedFarm = testFarms[0]
+        expectedFarm.number_of_favorites = '2'
         return supertest(app)
           .get(`/api/farms`)
           .query(`q=${searchTerm}`)
-          .expect(200, [testFarms[0]])
+          .expect(200, [expectedFarm])
       })
 
       it(`searches for farms selling a selected product category`, () => {
         const productsQuery = 'produce'
+        const expectedFarm = testFarms[1]
+        expectedFarm.number_of_favorites = '1'
         return supertest(app)
           .get(`/api/farms`)
           .query(`products=${productsQuery}`)
-          .expect(200, [testFarms[1]])
+          .expect(200, [expectedFarm])
       })
 
       it(`searches for farms offering a selected purchase option category`, () => {
         const purchaseOptionsQuery = 'delivery'
+        const expectedFarm = [testFarms[0], testFarms[1]]
+        expectedFarm[0].number_of_favorites = '2'
+        expectedFarm[1].number_of_favorites = '1'
         return supertest(app)
           .get(`/api/farms`)
           .query(`purchaseOptions=${purchaseOptionsQuery}`)
-          .expect(200, [testFarms[0]])
+          .expect(200, expectedFarm)
       })
 
       it(`allows multiple queries`, () => {
         const queryObject = {
-          q: 'poultry',
+          q: 'grass-fed',
           products: 'meat/poultry',
           purchaseOptions: 'pick-up'
         }
+        const expectedFarm = testFarms[0]
+        expectedFarm.number_of_favorites = '2'
         return supertest(app)
           .get(`/api/farms`)
           .query(queryObject)
-          .expect(200, [testFarms[0]])
+          .expect(200, [expectedFarm])
       })
 
     })
-
-    context.skip(`Given an XSS attack farm`, () => {
+    // TODO: start here
+    context(`Given an XSS attack farm`, () => {
       // const testFarms = makeFarmsArray()
       // const { maliciousFarm, sanitizedFarm } = makeMaliciousFarm()
 
