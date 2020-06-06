@@ -7,13 +7,9 @@ const { requireAuth } = require('../middleware/jwt-auth')
 
 favoritesRouter
   .route('/')
-  .post(requireAuth, jsonParser, (req, res, next) => {
+  .all(requireAuth)
+  .post(jsonParser, (req, res, next) => {
     const { favorite_farm } = req.body
-    // console.log(user_id)
-    // console.log(favorite_farm)
-    // Validation: get the farm and see if it exists, if not return a 404
-    // Validation: favorite_farm must be a number
-    //req.user.id instead of req.params.id
     FavoritesService.addFavorite(
       req.app.get('db'),
       req.user.id,
@@ -30,7 +26,7 @@ favoritesRouter
       })
       .catch(next)
   })
-  .get(requireAuth, jsonParser, (req, res, next) => {
+  .get(jsonParser, (req, res, next) => {
     FavoritesService.getFavoriteId(
       req.app.get('db'),
       req.user.id,
@@ -52,7 +48,8 @@ favoritesRouter
 
 favoritesRouter
   .route('/:id')
-  .delete(requireAuth, (req, res, next) => {
+  .all(requireAuth)
+  .delete((req, res, next) => {
     FavoritesService.removeFavorite(
       req.app.get('db'),
       req.params.id

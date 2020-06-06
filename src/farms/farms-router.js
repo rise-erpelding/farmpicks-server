@@ -32,7 +32,10 @@ farmsRouter
   .route('/')
   .get((req, res, next) => {
     if (req.query.q) {
-      FarmsService.getFarmsBySearchTerm(req.app.get('db'), req.query.q)
+      FarmsService.getFarmsBySearchTerm(
+        req.app.get('db'),
+        req.query.q
+      )
         .then(farms => {
           res.json(farms.map(serializeFarm))
         })
@@ -133,7 +136,30 @@ farmsRouter
   .get((req, res, next) => {
     res.json(serializeFarm(res.farm))
   })
-  .delete(requireAuth, (req, res, next) => {
+
+
+  farmsRouter
+  .route('/:id')
+  .all(requireAuth)
+  .all((req, res, next) => {
+    FarmsService.getFarmById(
+      req.app.get('db'),
+      req.params.id
+    )
+      .then(farm => {
+        if (!farm) {
+          return res
+            .status(404)
+            .json({
+              error: { message: `Farm does not exist` }
+            })
+        }
+        res.farm = farm
+        next()
+      })
+      .catch(next)
+  })
+  .delete((req, res, next) => {
     FarmsService.deleteFarm(
       req.app.get('db'),
       req.params.id
@@ -143,7 +169,7 @@ farmsRouter
       })
       .catch(next)
   })
-  .patch(requireAuth, jsonParser, (req, res, next) => {
+  .patch(jsonParser, (req, res, next) => {
     const { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived } = req.body
     const farmToUpdate = { farm_name, products, farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options, purchase_details, website, cover_image, profile_image, archived }
     
