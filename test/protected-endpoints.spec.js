@@ -26,47 +26,36 @@ describe('Protected endpoints', function() {
 
   after('disconnect from db', () => db.destroy())
 
-  before('cleanup', () => db.raw(
-    'TRUNCATE farms RESTART IDENTITY CASCADE'
-  ))
+  before('cleanup', () => helpers.cleanTables(db))
 
-  before('cleanup', () => db.raw(
-    'TRUNCATE users RESTART IDENTITY CASCADE'
-  ))
+  afterEach('cleanup', () => helpers.cleanTables(db))
 
-  before('cleanup', () => db.raw(
-    'TRUNCATE favorites RESTART IDENTITY CASCADE'
-  ))
+  beforeEach('insert farms, favorites, and users', () =>
+  helpers.seedFarmpicksTables(
+    db,
+    testUsers,
+    testFarms,
+    testFavorites,
+  )
+)
 
-  afterEach('cleanup', () => db.raw(
-    'TRUNCATE farms RESTART IDENTITY CASCADE'
-  ))
+  // beforeEach('insert users', () => {
+  //   return db
+  //     .into('users')
+  //     .insert(testUsers)
+  // })
 
-  afterEach('cleanup', () => db.raw(
-    'TRUNCATE users RESTART IDENTITY CASCADE'
-  ))
+  // beforeEach('insert farms', () => {
+  //   return db
+  //     .into('farms')
+  //     .insert(testFarms)
+  // })
 
-  afterEach('cleanup', () => db.raw(
-    'TRUNCATE favorites RESTART IDENTITY CASCADE'
-  ))
-
-  beforeEach('insert users', () => {
-    return db
-      .into('users')
-      .insert(testUsers)
-  })
-
-  beforeEach('insert farms', () => {
-    return db
-      .into('farms')
-      .insert(testFarms)
-  })
-
-  beforeEach('insert favorites', () => {
-    return db
-      .into('favorites')
-      .insert(testFavorites)
-  })
+  // beforeEach('insert favorites', () => {
+  //   return db
+  //     .into('favorites')
+  //     .insert(testFavorites)
+  // })
 
   const protectedEndpoints = [
     {

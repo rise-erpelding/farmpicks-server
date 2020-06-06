@@ -23,29 +23,9 @@ describe('Auth Endpoints', function() {
 
   after('disconnect from db', () => db.destroy())
 
-  before('cleanup', () => db.raw(
-    'TRUNCATE farms RESTART IDENTITY CASCADE'
-  ))
+  before('cleanup', () => helpers.cleanTables(db))
 
-  before('cleanup', () => db.raw(
-    'TRUNCATE users RESTART IDENTITY CASCADE'
-  ))
-
-  before('cleanup', () => db.raw(
-    'TRUNCATE favorites RESTART IDENTITY CASCADE'
-  ))
-
-  afterEach('cleanup', () => db.raw(
-    'TRUNCATE farms RESTART IDENTITY CASCADE'
-  ))
-
-  afterEach('cleanup', () => db.raw(
-    'TRUNCATE users RESTART IDENTITY CASCADE'
-  ))
-
-  afterEach('cleanup', () => db.raw(
-    'TRUNCATE favorites RESTART IDENTITY CASCADE'
-  ))
+  afterEach('cleanup', () => helpers.cleanTables(db))
 
   describe(`POST /api/auth/login`, () => {
     beforeEach('insert users', () =>

@@ -271,6 +271,50 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   return `Bearer ${token}`
 }
 
+function seedFarmpicksTables(db, users, farms, favorites=[]) {
+  // use a transaction to group the queries and auto rollback on any failure
+  return db.transaction(async trx => {
+    await seedUsers(trx, users)
+    await trx.into('farms').insert(farms)
+    // update the auto sequence to match the forced id values
+    await trx.raw(
+      `SELECT setval('farms_id_seq', ?)`,
+      [farms[farms.length - 1].id],
+    )
+    // only insert comments if there are some, also update the sequence counter
+    if (favorites.length) {
+      await trx.into('favorites').insert(favorites)
+      await trx.raw(
+        `SELECT setval('favorites_id_seq', ?)`,
+        [favorites[favorites.length - 1].id],
+      )
+    }
+  })
+}
+
+function cleanTables(db) {
+  return db.transaction(trx =>
+    trx.raw(
+      `TRUNCATE
+        farms,
+        users,
+        favorites
+      `
+    )
+    .then(() =>
+      Promise.all([
+        trx.raw(`ALTER SEQUENCE farms_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`ALTER SEQUENCE favorites_id_seq minvalue 0 START WITH 1`),
+        trx.raw(`SELECT setval('farms_id_seq', 0)`),
+        trx.raw(`SELECT setval('users_id_seq', 0)`),
+        trx.raw(`SELECT setval('favorites_id_seq', 0)`),
+      ])
+    )
+  )
+}
+
+
 function makeFarmsFixtures() {
   const testUsers = makeUsersArray()
   const testFarms = makeFarmsArray()
@@ -285,6 +329,7 @@ module.exports = {
   seedUsers,
   makeFavoritesArray,
   makeAuthHeader,
-
+  seedFarmpicksTables,
+  cleanTables,
   makeFarmsFixtures,
 }
