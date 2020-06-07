@@ -9,7 +9,6 @@ usersRouter
   .route('/')
   .all(requireAuth)
   .get(jsonParser, (req, res, next) => {
-    //some validations
     UsersService.getUserById(
       req.app.get('db'),
       req.user.id
@@ -32,7 +31,6 @@ usersRouter
   .route('/favorites')
   .all(requireAuth)
   .get(jsonParser, (req, res, next) => {
-    //some validations
     UsersService.getUserFavorites(
       req.app.get('db'),
       req.user.id
