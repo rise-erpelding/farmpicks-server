@@ -38,7 +38,7 @@ describe('Farms Endpoints', function() {
       })
     })
 
-    context.only(`Given there are farms in the database`, () => {
+    context(`Given there are farms in the database`, () => {
 
       beforeEach('insert farms, favorites, and users', () =>
         helpers.seedFarmpicksTables(
@@ -63,17 +63,17 @@ describe('Farms Endpoints', function() {
 
       it(`searches for farms that contain a query term q in the name, description, purchase details, contact name, or city`, () => {
         const searchTerm = 'beef'
-        const expectedFarm = testFarms[0]
-        expectedFarm.number_of_favorites = '2'
+        const expectedFarm = [{...testFarms[0]}]
+        expectedFarm[0].number_of_favorites = '2'
         return supertest(app)
           .get(`/api/farms`)
           .query(`q=${searchTerm}`)
-          .expect(200, [expectedFarm])
+          .expect(200, expectedFarm)
       })
 
       it(`searches for farms offering a selected purchase option category`, () => {
         const purchaseOptionsQuery = 'delivery'
-        const expectedFarm = [testFarms[0], testFarms[1]]
+        const expectedFarm = [{...testFarms[0]}, {...testFarms[1]}]
         expectedFarm[0].number_of_favorites = '2'
         expectedFarm[1].number_of_favorites = '1'
         return supertest(app)
@@ -84,26 +84,26 @@ describe('Farms Endpoints', function() {
 
       it(`searches for farms selling a selected product category`, () => {
         const productsQuery = 'produce'
-        const expectedFarm = testFarms[1]
-        expectedFarm.number_of_favorites = '1'
+        const expectedFarm = [{...testFarms[1]}]
+        expectedFarm[0].number_of_favorites = '1'
         return supertest(app)
           .get(`/api/farms`)
           .query(`products=${productsQuery}`)
-          .expect(200, [expectedFarm])
+          .expect(200, expectedFarm)
       })
 
-      it(`allows multiple queries`, () => {
+      it(`searches for farms by query q, product type, or purchase option type`, () => {
         const queryObject = {
           q: 'grass-fed',
           products: 'meat/poultry',
           purchaseOptions: 'pick-up'
         }
-        const expectedFarm = testFarms[0]
-        expectedFarm.number_of_favorites = '2'
+        const expectedFarm = [{...testFarms[0]}]
+        expectedFarm[0].number_of_favorites = '2'
         return supertest(app)
           .get(`/api/farms`)
           .query(queryObject)
-          .expect(200, [expectedFarm])
+          .expect(200, expectedFarm)
       })
 
     })
@@ -163,7 +163,7 @@ describe('Farms Endpoints', function() {
 
       it(`responds with 200 and the specified farm`, () => {
         const farmId = 2
-        const expectedFarm = testFarms[farmId - 1]
+        const expectedFarm = {...testFarms[farmId - 1]}
         expectedFarm.number_of_favorites = '1'
         return supertest(app)
           .get(`/api/farms/${farmId}`)
@@ -273,48 +273,6 @@ describe('Farms Endpoints', function() {
     })
   })
 
-  describe(`DELETE /api/farms/:id`, () => {
-
-    context(`Given no farms in the database`, () => {
-      it(`responds with 404`, () => {
-        const nonexistentFarmId = 99999
-        return supertest(app)
-          .delete(`/api/farms/${nonexistentFarmId}`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
-          .expect(404, { error: { message: `Farm does not exist` } })
-      })
-    })
-
-    context(`Given there are farms in the database`, () => {
-
-      beforeEach('insert farms, favorites, and users', () =>
-      helpers.seedFarmpicksTables(
-        db,
-        testUsers,
-        testFarms,
-        testFavorites,
-      )
-    )
-
-      it(`if farm is not referenced in table 'favorites', responds with 204 and removes the farm`, () => {
-        const idToRemove = 3
-        const expectedFarms = testFarms.filter(farm => farm.id !== idToRemove)
-        expectedFarms[0].number_of_favorites = '2'
-        expectedFarms[1].number_of_favorites = '1'
-        expectedFarms[2].number_of_favorites = '2'
-        return supertest(app)
-          .delete(`/api/farms/${idToRemove}`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
-          .expect(204)
-          .then(res =>
-            supertest(app)
-              .get(`/api/farms`)
-              .expect(expectedFarms)
-          )
-      })
-    })
-  })
-
   describe(`PATCH /api/farms/:id`, () => {
     const farmUpdateFields = {
       farm_name: "Test Farm",
@@ -351,7 +309,7 @@ describe('Farms Endpoints', function() {
           .send(farmUpdateFields)
           .expect(204)
           .then(res => {
-            supertest(app)
+            return supertest(app)
               .get(`/api/farms/${idToUpdate}`)
               .expect(res => {
                 res.body.farm_name = farmUpdateFields.farm_name
@@ -375,8 +333,46 @@ describe('Farms Endpoints', function() {
     })
   })
 
-  //TEST FOR GET api/products
+  describe(`DELETE /api/farms/:id`, () => {
 
-  //TEST FOR GET api/purchase-options
+    context(`Given no farms in the database`, () => {
+      it(`responds with 404`, () => {
+        const nonexistentFarmId = 99999
+        return supertest(app)
+          .delete(`/api/farms/${nonexistentFarmId}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+          .expect(404, { error: { message: `Farm does not exist` } })
+      })
+    })
 
+    context(`Given there are farms in the database`, () => {
+
+      beforeEach('insert farms, favorites, and users', () =>
+      helpers.seedFarmpicksTables(
+        db,
+        testUsers,
+        testFarms,
+        testFavorites,
+      )
+    )
+
+      it(`if farm is not referenced in table 'favorites', responds with 204 and removes the farm`, () => {
+        const idToRemove = 3
+        const insertedFarms = testFarms
+        const expectedFarms = insertedFarms.filter(farm => farm.id !== idToRemove)
+        expectedFarms[0].number_of_favorites = '2'
+        expectedFarms[1].number_of_favorites = '1'
+        expectedFarms[2].number_of_favorites = '2'
+        return supertest(app)
+          .delete(`/api/farms/${idToRemove}`)
+          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
+          .expect(204)
+          .then(res =>
+            supertest(app)
+              .get(`/api/farms`)
+              .expect(expectedFarms)
+          )
+      })
+    })
+  })
 })

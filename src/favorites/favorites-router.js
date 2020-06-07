@@ -10,6 +10,11 @@ favoritesRouter
   .all(requireAuth)
   .post(jsonParser, (req, res, next) => {
     const { favorite_farm } = req.body
+    if (!favorite_farm) {
+      return res.status(400).json({
+        error: { message: `Missing 'favorite_farm' in request body` }
+      })
+    }
     FavoritesService.addFavorite(
       req.app.get('db'),
       req.user.id,
