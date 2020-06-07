@@ -216,7 +216,6 @@ function seedUsers(db, users) {
   }))
   return db.into('users').insert(preppedUsers)
     .then(() =>
-      // update the auto sequence to stay in sync
       db.raw(
         `SELECT setval('users_id_seq', ?)`,
         [users[users.length - 1].id],
@@ -268,16 +267,13 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 }
 
 function seedFarmpicksTables(db, users, farms, favorites=[]) {
-  // use a transaction to group the queries and auto rollback on any failure
   return db.transaction(async trx => {
     await seedUsers(trx, users)
     await trx.into('farms').insert(farms)
-    // update the auto sequence to match the forced id values
     await trx.raw(
       `SELECT setval('farms_id_seq', ?)`,
       [farms[farms.length - 1].id],
     )
-    // only insert comments if there are some, also update the sequence counter
     if (favorites.length) {
       await trx.into('favorites').insert(favorites)
       await trx.raw(

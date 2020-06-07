@@ -109,7 +109,6 @@ describe('Farms Endpoints', function() {
     })
 
     context(`Given an XSS attack farm`, () => {
-      // const testFarms = makeFarmsArray()
       const { maliciousFarm, sanitizedFarm } = helpers.makeMaliciousFarm()
 
       beforeEach('insert farms, favorites, and users', () =>

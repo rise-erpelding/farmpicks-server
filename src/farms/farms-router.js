@@ -83,22 +83,11 @@ farmsRouter
         })
       }
 
-    // if (purchase_options && !Array.isArray(purchase_options) || products && !Array.isArray(products)) {
-    //   return res.status(400).json({
-    //     error: { message: `must be an array` }
-    //   })
-    // }
-
     if (!farm_name) {
       return res.status(400).json({
         error: { message: `Missing 'farm_name' in request body` }
       })
     }
-
-
-
-    // TODO: Some sort of validation to ensure that products and purchase_options are both arrays
-
 
     FarmsService.insertFarm(
       req.app.get('db'),
