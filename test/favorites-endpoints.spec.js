@@ -29,17 +29,10 @@ describe('Users Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db))
 
-  describe(`GET /api/favorites`, () => {
-    context(`Given no favorites in the database`, () => {
-      it(`responds with a 401 "Unauthorized"`, () => {
-        return supertest(app)
-          .get(`/api/favorites`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
-          .expect(404, { error: { message: "Favorite does not exist"} })
-      })
-    })
 
-    context(`Given there are users in the database`, () => {
+
+  describe(`GET /api/favorites`, () => {
+    context(`Given that the database is seeded with farms, favorites, and users`, () => {
 
       beforeEach('insert farms, favorites, and users', () =>
         helpers.seedFarmpicksTables(
@@ -111,7 +104,7 @@ describe('Users Endpoints', function() {
     })
   })
 
-  describe(`DELETE /api/favorites/:id`, () => {
+  describe.skip(`DELETE /api/favorites/:id`, () => {
 
     context(`Given no favorites in the database`, () => {
       it(`responds with 404`, () => {
@@ -134,7 +127,7 @@ describe('Users Endpoints', function() {
       )
     )
 
-      it.only(`if farm is not referenced in table 'favorites', responds with 204 and removes the farm`, () => {
+      it(`if farm is not referenced in table 'favorites', responds with 204 and removes the farm`, () => {
         const idToRemove = 4
         const insertedFavorites = testFavorites
         const expectedFavorites = insertedFavorites
