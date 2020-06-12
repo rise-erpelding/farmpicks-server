@@ -1,39 +1,22 @@
-# Thingful Server
+# FarmPicks Server
 
 ## Setting Up
 
 - Install dependencies: `npm install`
 - Create development and test databases: `createdb farmpicks`, `createdb farmpicks-test`
-- Create database user: `createuser thingful`
+- Create database user: `createuser farmpicks`
 - Grant privileges to new user in `psql`:
-  - `GRANT ALL PRIVILEGES ON DATABASE thingful TO thingful`
-  - `GRANT ALL PRIVILEGES ON DATABASE "thingful-test" TO thingful`
+  - `GRANT ALL PRIVILEGES ON DATABASE farmpicks TO farmpicks`
+  - `GRANT ALL PRIVILEGES ON DATABASE "farmpicks-test" TO farmpicks`
 - Prepare environment file: `cp example.env .env`
 - Replace values in `.env` with your custom values.
 - Bootstrap development database: `npm run migrate`
 - Bootstrap test database: `npm run migrate:test`
 
-### Configuring Postgres
-
-For tests involving time to run properly, your Postgres database must be configured to run in the UTC timezone.
-
-1. Locate the `postgresql.conf` file for your Postgres installation.
-    - OS X, Homebrew: `/usr/local/var/postgres/postgresql.conf`
-2. Uncomment the `timezone` line and set it to `UTC` as follows:
-
-```
-# - Locale and Formatting -
-
-datestyle = 'iso, mdy'
-#intervalstyle = 'postgres'
-timezone = 'UTC'
-#timezone_abbreviations = 'Default'     # Select the set of available time zone
-```
-
 ## Sample Data
 
-- To seed the database for development: `psql -U thingful -d thingful -a -f seeds/seed.thingful_tables.sql`
-- To clear seed data: `psql -U thingful -d thingful -a -f seeds/trunc.thingful_tables.sql`
+- To seed the database for development: `psql -U farmpicks -d farmpicks -a -f seeds/seed.sample_farms.sql`
+- To clear seed data: `psql -U farmpicks -d farmpicks -a -f seeds/trunc.sample_farms.sql`
 
 ## Scripts
 
@@ -41,40 +24,87 @@ timezone = 'UTC'
 - Run tests: `npm test`
 
 
-
-# Express Boilerplate!
-
-This is a boilerplate project used for starting new projects!
-
-## Set up
-
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
-
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
-
-## Scripts
-
-Start the application `npm start`
-
-Start nodemon for the application `npm run dev`
-
-Run the tests `npm test`
-
-## Deploying
-
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
-
-
 ## Endpoints
-PATH - /api/farms
-NAME - Farms
-DESCRIPTION - Search for farms by name, category
-PARAMETERS
+
+### GET /api/farms
+#### Description
+Retrieves farms' information matching parameters, if parameters are used. If not, retrieves all farms' information.
+#### Parameters
 q (string) - Optional search term
-products (comma-delimited coming soon) - Optional to filter by what kind of product
-purchaseOptions (comma-delimited coming soon) - Optional to filter by purchase option
+products - Optional, used to filter by type of product, must be one of:
+- meat/poultry
+- seafood
+- dairy
+- eggs
+- produce
+- plants
+- preserves/syrup
+- bee products
+- nuts/dried fruits
+- prepared foods
+- coffee/tea
+- bath & body products
+purchaseOptions - Optional, used to filter by type of purchase option, must be one of:
+- shipping
+- delivery
+- pick-up
+- farmers market
+
+### POST /api/farms
+#### Description
+Inserts a new farm. farm_name is required. Optional fields include:
+products (array), farm_description, address_1, address_2, city, state, zip_code, contact_name, phone_number, purchase_options (array), purchase_details, website, cover_image (url), profile_image (url), archived (boolean)
+
+### GET /api/farms/:id
+#### Description
+Retrieves farm information corresponding to the farm id provided.
+
+### DELETE /api/farms/:id
+#### Description
+Deletes farm corresponding to the farm id provided
+
+### PATCH /api/farms/:id
+#### Description
+Updates farm information for any of the fields seen in POST /api/farms
+
+### GET /api/products
+#### Description
+Retrieves all product categories corresponding to existing farms in database.
+
+### GET /api/purchase-options
+#### Description
+Retrieves all purchase option categories corresponding to existing farms in database.
+
+### GET /api/users
+#### Description
+Retrieves user information (user_name, first_name, last_name, user_type, id) for the authenticated user.
+#### Authorization
+Required
+
+### GET /api/users/favorites
+#### Description
+Retrieves basic information (id, farm_name, products, farm_description, profile_image) for farms added to user's favorites.
+#### Authorization
+Required
+
+### POST /api/favorites/
+#### Description
+Adds favorited_farm (provided in request body) to user's favorite farms.
+#### Authorization
+Required
+
+### DELETE /api/favorites/:id
+#### Description
+Removes favorite corresponding to the favorite id provided in the request.
+#### Authorization
+Required
+
+### GET /api/favorites/
+#### Description
+Gets favorite id corresponding to current user and farm id provided in query.
+#### Authorization
+Required
+
+### POST /api/auth/login
+#### Description
+Handles user authentication.
