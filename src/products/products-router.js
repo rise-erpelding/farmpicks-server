@@ -2,6 +2,7 @@ const express = require('express')
 const ProductsService = require('./products-service')
 const productsRouter = express.Router()
 
+// gets all product categories corresponding to entries in the farms table
 productsRouter
   .route('/')
   .get((req, res, next) => {

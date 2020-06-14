@@ -8,6 +8,7 @@ usersRouter
   .route('/')
   .all(requireAuth)
   .get(jsonParser, (req, res, next) => {
+    // gets user information (not including password) for user specified
     UsersService.getUserById(
       req.app.get('db'),
       req.user.id
@@ -30,6 +31,7 @@ usersRouter
   .route('/favorites')
   .all(requireAuth)
   .get(jsonParser, (req, res, next) => {
+    // gets favorites for user specified
     UsersService.getUserFavorites(
       req.app.get('db'),
       req.user.id

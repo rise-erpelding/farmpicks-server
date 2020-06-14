@@ -32,6 +32,7 @@ farmsRouter
   .route('/')
   .get((req, res, next) => {
     if (req.query.q) {
+      // looks for optional searchTerm `q`
       FarmsService.getFarmsBySearchTerm(
         req.app.get('db'),
         req.query.q
@@ -40,6 +41,7 @@ farmsRouter
           res.json(farms.map(serializeFarm))
         })
     } else if (req.query.products) {
+      // looks for optional product categories `products`
       const queryProducts = req.query.products.toLowerCase()
       const validProductCategories = [`meat/poultry`, `seafood`, `dairy`, `eggs`, `produce`, `plants`, `preserves/syrup`, `bee products`, `nuts/dried fruits`, `prepared foods`, `coffee/tea`, `bath & body products`]
       if (!validProductCategories.includes(queryProducts)) {
@@ -52,6 +54,7 @@ farmsRouter
           res.json(farms.map(serializeFarm))
         })
     } else if (req.query.purchaseOptions) {
+      // looks for optional purchase option categories `purchaseOptions`
       const queryPurchaseOptions = req.query.purchaseOptions.toLowerCase()
       const validPurchaseOptionsCategories = [`shipping`, `delivery`, `pick-up`, `farmers market`]
       if (!validPurchaseOptionsCategories.includes(queryPurchaseOptions)) {
@@ -64,6 +67,7 @@ farmsRouter
           res.json(farms.map(serializeFarm))
         })
     } else {
+      // if no query provided, gets all farms
       FarmsService.getAllFarms(req.app.get('db'))
       .then(farms => {
         res.json(farms.map(serializeFarm))

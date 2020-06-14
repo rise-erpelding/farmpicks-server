@@ -33,6 +33,7 @@ const UsersService = {
       )
       .where('users.id', userId)
   },
+  // addUser, removeUser, updateUser not currently used in users-router
   addUser(knex, newUser) {
     return knex
       .insert(newUser)
@@ -53,27 +54,6 @@ const UsersService = {
       .from('users')
       .where('id', id)
       .update(updatedUserInfo)
-  },
-  addUserFavorite(knex, userId, farmId) {
-    return knex
-    .insert({
-      favorited_farm: farmId,
-      favorited_by: userId
-    })
-    .into('favorites')
-    .returning('*')
-    .then(rows => {
-      return rows[0]
-    })
-  },
-  removeUserFavorite(knex, userId, farmId) {
-    return knex
-      .from('favorites')
-      .where({
-        favorited_farm: farmId,
-        favorited_by: userId
-      })
-      .delete()
   }
 }
 

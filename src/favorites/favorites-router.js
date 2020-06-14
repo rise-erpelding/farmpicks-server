@@ -15,6 +15,7 @@ favoritesRouter
         error: { message: `Missing 'favorite_farm' in request body` }
       })
     }
+    // adds the farm id in favorite_farm to favorites table, along with user id
     FavoritesService.addFavorite(
       req.app.get('db'),
       req.user.id,
@@ -32,6 +33,8 @@ favoritesRouter
       .catch(next)
   })
   .get(jsonParser, (req, res, next) => {
+    // gets the id from the favorites table corresponding to the user id and farm id 
+    // provided--this id is used to delete from favorites table
     FavoritesService.getFavoriteId(
       req.app.get('db'),
       req.user.id,
@@ -55,6 +58,7 @@ favoritesRouter
   .route('/:id')
   .all(requireAuth)
   .delete((req, res, next) => {
+    // deletes entry in favorites table corresponding to that id
     FavoritesService.removeFavorite(
       req.app.get('db'),
       req.params.id

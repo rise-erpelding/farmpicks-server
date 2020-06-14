@@ -39,24 +39,6 @@ describe('Protected endpoints', function() {
     )
   )
 
-  // beforeEach('insert users', () => {
-  //   return db
-  //     .into('users')
-  //     .insert(testUsers)
-  // })
-
-  // beforeEach('insert farms', () => {
-  //   return db
-  //     .into('farms')
-  //     .insert(testFarms)
-  // })
-
-  // beforeEach('insert favorites', () => {
-  //   return db
-  //     .into('favorites')
-  //     .insert(testFavorites)
-  // })
-
   const protectedEndpoints = [
     {
       name: 'POST /api/farms',
