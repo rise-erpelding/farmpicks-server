@@ -19,11 +19,11 @@ username: consumer1
 password: password
 
 ## Screenshots
-![Landing Page](public/Screenshots/Farmpicks-Landing-Page.png)
+![Landing Page](screenshots/Farmpicks-Landing-Page.png)
 
-![Results Page](public/Screenshots/Farmpicks-Search-Results.png)
+![Results Page](screenshots/Farmpicks-Search-Results.png)
 
-![Farm Information Page](public/Screenshots/Farmpicks-Farm-Page.png)
+![Farm Information Page](screenshots/Farmpicks-Farm-Page.png)
 
 ## Built with
 - Node.js
