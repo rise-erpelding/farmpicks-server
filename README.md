@@ -64,6 +64,7 @@ See the FarmPicks Client Repo at <https://github.com/rise-erpelding/farmpicks-cl
 Retrieves farms' information matching parameters, if parameters are used. If not, retrieves all farms' information.
 #### Parameters
 q (string) - Optional search term
+
 products - Optional, used to filter by type of product, must be one of:
 - meat/poultry
 - seafood
@@ -77,6 +78,7 @@ products - Optional, used to filter by type of product, must be one of:
 - prepared foods
 - coffee/tea
 - bath & body products
+
 purchaseOptions - Optional, used to filter by type of purchase option, must be one of:
 - shipping
 - delivery
