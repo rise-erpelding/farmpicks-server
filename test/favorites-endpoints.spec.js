@@ -104,47 +104,4 @@ describe('Favorites Endpoints', function() {
     })
   })
 
-  describe.skip(`DELETE /api/favorites/:id`, () => {
-
-    context(`Given no favorites in the database`, () => {
-      it(`responds with 404`, () => {
-        const nonexistentFavoriteId = 99999
-        return supertest(app)
-          .delete(`/api/favorites/${nonexistentFavoriteId}`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
-          .expect(404, { error: { message: "Favorite does not exist"} })
-      })
-    })
-
-    context(`Given there are farms in the database`, () => {
-
-      beforeEach('insert farms, favorites, and users', () =>
-      helpers.seedFarmpicksTables(
-        db,
-        testUsers,
-        testFarms,
-        testFavorites,
-      )
-    )
-
-      it(`if farm is not referenced in table 'favorites', responds with 204 and removes the farm`, () => {
-        const idToRemove = 4
-        const insertedFavorites = testFavorites
-        const expectedFavorites = insertedFavorites
-          .filter(
-            fav =>
-              fav.id !== idToRemove
-          )
-        return supertest(app)
-          .delete(`/api/favorites/${idToRemove}`)
-          .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
-          .expect(204)
-          .then(res =>
-            supertest(app)
-              .get(`/api/favorites`)
-              .expect(expectedFavorites)
-          )
-      })
-    })
-  })
 })
