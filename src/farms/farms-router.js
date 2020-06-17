@@ -43,7 +43,7 @@ farmsRouter
     } else if (req.query.products) {
       // looks for optional product categories `products`
       const queryProducts = req.query.products.toLowerCase()
-      const validProductCategories = [`meat/poultry`, `seafood`, `dairy`, `eggs`, `produce`, `plants`, `preserves/syrup`, `bee products`, `nuts/dried fruits`, `prepared foods`, `coffee/tea`, `bath & body products`]
+      const validProductCategories = [`meat/poultry`, `seafood`, `dairy`, `eggs`, `produce`, `plants`, `preserves/syrup`, `bee products`, `nuts/dried fruits`, `prepared foods`, `coffee/tea`, `bath and body products`]
       if (!validProductCategories.includes(queryProducts)) {
         return res.status(400).json({
           error: { message: `products must be one of ${validProductCategories}` }
