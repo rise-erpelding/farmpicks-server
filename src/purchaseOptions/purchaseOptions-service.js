@@ -1,7 +1,7 @@
 const purchaseOptionsService = {
   getAllPurchaseCategories(knex) {
-    return knex.raw('SELECT ARRAY(SELECT DISTINCT UNNEST(purchase_options) FROM  farms)')
+    return knex.raw('SELECT ARRAY(SELECT DISTINCT UNNEST(purchase_options) FROM  farms)');
   },
-}
+};
 
-module.exports = purchaseOptionsService
+module.exports = purchaseOptionsService;

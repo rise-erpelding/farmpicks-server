@@ -1,19 +1,19 @@
-const express = require('express')
-const FavoritesService = require('./favorites-service')
-const favoritesRouter = express.Router()
-const path = require('path')
-const jsonParser = express.json()
-const { requireAuth } = require('../middleware/jwt-auth')
+const express = require('express');
+const FavoritesService = require('./favorites-service');
+const favoritesRouter = express.Router();
+const path = require('path');
+const jsonParser = express.json();
+const { requireAuth } = require('../middleware/jwt-auth');
 
 favoritesRouter
   .route('/')
   .all(requireAuth)
   .post(jsonParser, (req, res, next) => {
-    const { favorite_farm } = req.body
+    const { favorite_farm } = req.body;
     if (!favorite_farm) {
       return res.status(400).json({
         error: { message: `Missing 'favorite_farm' in request body` }
-      })
+      });
     }
     // adds the farm id in favorite_farm to favorites table, along with user id
     FavoritesService.addFavorite(
@@ -28,9 +28,9 @@ favoritesRouter
             req.originalUrl,
             favorite_farm.toString()
           ))
-          .json(favorite)
+          .json(favorite);
       })
-      .catch(next)
+      .catch(next);
   })
   .get(jsonParser, (req, res, next) => {
     // gets the id from the favorites table corresponding to the user id and farm id 
@@ -46,13 +46,13 @@ favoritesRouter
             .status(404)
             .json({
               error: { message: `Favorite does not exist` }
-            })
+            });
         }
-        res.json(favorite)
-        next()
+        res.json(favorite);
+        next();
       })
-      .catch(next)
-  })
+      .catch(next);
+  });
 
 favoritesRouter
   .route('/:id')
@@ -63,10 +63,10 @@ favoritesRouter
       req.app.get('db'),
       req.params.id
     )
-      .then(numRowsAffected => {
-        res.status(204).end()
+      .then(() => {
+        res.status(204).end();
       })
-      .catch(next)
-  })
+      .catch(next);
+  });
 
-  module.exports = favoritesRouter
+  module.exports = favoritesRouter;

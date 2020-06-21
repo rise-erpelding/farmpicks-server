@@ -1,5 +1,5 @@
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 function makeFarmsArray() {
   return [
@@ -109,7 +109,7 @@ function makeFarmsArray() {
       date_modified: "2020-06-04T14:57:05.623Z",
       archived: false
     }
-  ]
+  ];
 }
 
 function makeMaliciousFarm() {
@@ -131,17 +131,17 @@ function makeMaliciousFarm() {
     profile_image: "https://picsum.photos/200",
     archived: false,
     date_modified: "2020-04-22T16:28:32.615Z"
-  }
+  };
   const sanitizedFarm = {
     ...maliciousFarm,
     address_1: `Not actually an address &lt;script&gt;alert("xss");&lt;/script&gt;`,
     farm_description: `<strong>Not</strong> a description here either <img src="https://url.to.file.which/does-not.exist">`,
     number_of_favorites: '0'
-  }
+  };
   return {
     maliciousFarm,
     sanitizedFarm
-  }
+  };
 }
 
 function makeUsersArray() {
@@ -206,21 +206,21 @@ function makeUsersArray() {
       date_created: "2020-04-28T16:28:32.615Z",
       date_modified: "2020-04-28T16:28:32.615Z"
     }
-  ]
+  ];
 }
 
 function seedUsers(db, users) {
   const preppedUsers = users.map(user => ({
     ...user,
     password: bcrypt.hashSync(user.password, 1)
-  }))
+  }));
   return db.into('users').insert(preppedUsers)
     .then(() =>
       db.raw(
         `SELECT setval('users_id_seq', ?)`,
         [users[users.length - 1].id],
       )
-    )
+    );
 }
 
 function makeFavoritesArray() {
@@ -255,33 +255,33 @@ function makeFavoritesArray() {
       favorited_by: 6,
       date_created: "2020-05-18T16:28:32.615Z"
     }
-  ]
+  ];
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
     subject: user.user_name,
     algorithm: 'HS256',
-  })
-  return `Bearer ${token}`
+  });
+  return `Bearer ${token}`;
 }
 
 function seedFarmpicksTables(db, users, farms, favorites=[]) {
   return db.transaction(async trx => {
-    await seedUsers(trx, users)
-    await trx.into('farms').insert(farms)
+    await seedUsers(trx, users);
+    await trx.into('farms').insert(farms);
     await trx.raw(
       `SELECT setval('farms_id_seq', ?)`,
       [farms[farms.length - 1].id],
-    )
+    );
     if (favorites.length) {
-      await trx.into('favorites').insert(favorites)
+      await trx.into('favorites').insert(favorites);
       await trx.raw(
         `SELECT setval('favorites_id_seq', ?)`,
         [favorites[favorites.length - 1].id],
-      )
+      );
     }
-  })
+  });
 }
 
 function cleanTables(db) {
@@ -303,22 +303,22 @@ function cleanTables(db) {
         trx.raw(`SELECT setval('favorites_id_seq', 0)`),
       ])
     )
-  )
+  );
 }
 
 
 function makeFarmsFixtures() {
-  const testUsers = makeUsersArray()
-  const testFarms = makeFarmsArray()
-  const testFavorites = makeFavoritesArray()
-  return { testUsers, testFarms, testFavorites }
+  const testUsers = makeUsersArray();
+  const testFarms = makeFarmsArray();
+  const testFavorites = makeFavoritesArray();
+  return { testUsers, testFarms, testFavorites };
 }
 
 function makeExpectedFarm(farm, favorites) {
   const number_of_favorites = favorites
     .filter(favorite => favorite.favorited_farm === farm.id)
     .length
-    .toString()
+    .toString();
 
   return {
     id: farm.id,
@@ -340,7 +340,7 @@ function makeExpectedFarm(farm, favorites) {
     profile_image: farm.profile_image,
     date_modified: farm.date_modified,
     archived: farm.archived
-  }
+  };
 }
 
 module.exports = {
@@ -354,4 +354,4 @@ module.exports = {
   cleanTables,
   makeFarmsFixtures,
   makeExpectedFarm
-}
+};

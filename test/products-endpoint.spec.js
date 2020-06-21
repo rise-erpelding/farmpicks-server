@@ -1,15 +1,15 @@
-const knex = require('knex')
-const app = require('../src/app')
-const helpers = require('./test-helpers')
+const knex = require('knex');
+const app = require('../src/app');
+const helpers = require('./test-helpers');
 
 describe('Products Endpoints', function() {
-  let db
+  let db;
 
   const {
     testUsers,
     testFarms,
     testFavorites,
-  } = helpers.makeFarmsFixtures()
+  } = helpers.makeFarmsFixtures();
 
   before('make knex instance', () => {
     db = knex({
@@ -19,24 +19,25 @@ describe('Products Endpoints', function() {
         min: 0,
         max: 7
       }
-    })
-    app.set('db', db)
-  })
+    });
+    app.set('db', db);
+  });
 
-  after('disconnect from db', () => db.destroy())
+  after('disconnect from db', () => db.destroy());
 
-  before('cleanup', () => helpers.cleanTables(db))
+  before('cleanup', () => helpers.cleanTables(db));
 
-  afterEach('cleanup', () => helpers.cleanTables(db))
+  afterEach('cleanup', () => helpers.cleanTables(db));
 
   describe(`GET /api/products`, () => {
     context(`Given no farms in the database`, () => {
       it(`responds with 200 and an empty list`, () => {
+        // eslint-disable-next-line no-undef
         return supertest(app)
           .get(`/api/products`)
-          .expect(200, [])
-      })
-    })
+          .expect(200, []);
+      });
+    });
 
     context(`Given there are farms in the database`, () => {
 
@@ -47,7 +48,7 @@ describe('Products Endpoints', function() {
           testFarms,
           testFavorites,
         )
-      )
+      );
 
       it(`responds with 200 and all of the products from existing farms`, () => {
         const expectedProducts = [
@@ -58,11 +59,12 @@ describe('Products Endpoints', function() {
           "prepared foods",
           "bath & body products",
           "produce"
-        ]
+        ];
+        // eslint-disable-next-line no-undef
         return supertest(app)
           .get(`/api/products`)
-          .expect(200, expectedProducts)
-      })
-    })
-  })
-})
+          .expect(200, expectedProducts);
+      });
+    });
+  });
+});

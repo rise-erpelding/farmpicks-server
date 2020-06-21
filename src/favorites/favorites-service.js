@@ -8,8 +8,8 @@ const FavoritesService = {
       .into('favorites')
       .returning('*')
       .then(rows => {
-        return rows[0]
-      })
+        return rows[0];
+      });
   },
   getFavoriteId(knex, userId, farmId) {
     return knex
@@ -19,14 +19,14 @@ const FavoritesService = {
         favorited_farm: farmId,
         favorited_by: userId
       })
-      .first()
+      .first();
   },
   removeFavorite(knex, id) {
     return knex
       .from('favorites')
       .where('id', id)
-      .delete()
+      .delete();
   }
-}
+};
 
-module.exports = FavoritesService
+module.exports = FavoritesService;

@@ -1,6 +1,6 @@
-const express = require('express')
-const PurchaseOptionsService = require('./purchaseOptions-service')
-const purchaseOptionsRouter = express.Router()
+const express = require('express');
+const PurchaseOptionsService = require('./purchaseOptions-service');
+const purchaseOptionsRouter = express.Router();
 
 // gets all purchase option categories corresponding to entries in the farms table
 purchaseOptionsRouter
@@ -8,9 +8,9 @@ purchaseOptionsRouter
   .get((req, res, next) => {
     PurchaseOptionsService.getAllPurchaseCategories(req.app.get('db'))
     .then(options => {
-      res.json(options.rows[0].array)
+      res.json(options.rows[0].array);
     })
-    .catch(next)
-  })
+    .catch(next);
+  });
 
-  module.exports = purchaseOptionsRouter
+  module.exports = purchaseOptionsRouter;

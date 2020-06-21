@@ -10,7 +10,7 @@ const FarmsService = {
         'farms.id',
         'favorites.favorited_farm'
       )
-      .groupBy('farms.id')
+      .groupBy('farms.id');
   },
   getFarmsBySearchTerm(knex, query) {
     return knex
@@ -28,7 +28,7 @@ const FarmsService = {
         'farms.id',
         'favorites.favorited_farm'
       )
-      .groupBy('farms.id')
+      .groupBy('farms.id');
   },
   getFarmsByProduct(knex, products) {
     return knex
@@ -42,7 +42,7 @@ const FarmsService = {
         'farms.id',
         'favorites.favorited_farm'
       )
-      .groupBy('farms.id')
+      .groupBy('farms.id');
   },
   getFarmsByPurchaseOptions(knex, purchaseOptions) {
     return knex
@@ -56,7 +56,7 @@ const FarmsService = {
         'farms.id',
         'favorites.favorited_farm'
       )
-      .groupBy('farms.id')
+      .groupBy('farms.id');
   },
   insertFarm(knex, newFarm) {
     return knex
@@ -64,8 +64,8 @@ const FarmsService = {
       .into('farms')
       .returning('*')
       .then(rows => {
-        return rows[0]
-      })
+        return rows[0];
+      });
   },
   getFarmById(knex, id) {
     return knex
@@ -80,20 +80,20 @@ const FarmsService = {
         'favorites.favorited_farm'
       )
       .groupBy('farms.id')
-      .first()
+      .first();
   },
   deleteFarm(knex, id) {
     return knex
       .from('farms')
       .where('id', id)
-      .delete()
+      .delete();
   },
   updateFarm(knex, id, newFarmFields) {
     return knex
       .from('farms')
       .where('id', id)
-      .update(newFarmFields)
+      .update(newFarmFields);
   }
-}
+};
 
-module.exports = FarmsService
+module.exports = FarmsService;

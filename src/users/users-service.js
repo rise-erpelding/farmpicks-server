@@ -9,7 +9,7 @@ const UsersService = {
         'users.id'
       )
       .from('users')
-      .where('users.id', userId)
+      .where('users.id', userId);
   },
   getUserFavorites(knex, userId) {
     return knex
@@ -31,7 +31,7 @@ const UsersService = {
         'users.id',
         'favorites.favorited_by'
       )
-      .where('users.id', userId)
+      .where('users.id', userId);
   },
   // addUser, removeUser, updateUser not currently used in users-router
   addUser(knex, newUser) {
@@ -40,21 +40,21 @@ const UsersService = {
       .into('users')
       .returning('*')
       .then(rows => {
-        return rows[0]
-      })
+        return rows[0];
+      });
   },
   removeUser(knex, id) {
     return knex
       .from('users')
       .where('id', id)
-      .delete()
+      .delete();
   },
   updateUser(knex, id, updatedUserInfo) {
     return knex
       .from('users')
       .where('id', id)
-      .update(updatedUserInfo)
+      .update(updatedUserInfo);
   }
-}
+};
 
-module.exports = UsersService
+module.exports = UsersService;

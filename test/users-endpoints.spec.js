@@ -1,15 +1,15 @@
-const knex = require('knex')
-const app = require('../src/app')
-const helpers = require('./test-helpers')
+const knex = require('knex');
+const app = require('../src/app');
+const helpers = require('./test-helpers');
 
 describe('Users Endpoints', function() {
-  let db
+  let db;
 
   const {
     testUsers,
     testFarms,
     testFavorites,
-  } = helpers.makeFarmsFixtures()
+  } = helpers.makeFarmsFixtures();
 
   before('make knex instance', () => {
     db = knex({
@@ -19,15 +19,15 @@ describe('Users Endpoints', function() {
         min: 0,
         max: 7
       }
-    })
-    app.set('db', db)
-  })
+    });
+    app.set('db', db);
+  });
 
-  after('disconnect from db', () => db.destroy())
+  after('disconnect from db', () => db.destroy());
 
-  before('cleanup', () => helpers.cleanTables(db))
+  before('cleanup', () => helpers.cleanTables(db));
 
-  afterEach('cleanup', () => helpers.cleanTables(db))
+  afterEach('cleanup', () => helpers.cleanTables(db));
 
   describe(`GET /api/users`, () => {
     context(`Given there are users in the database`, () => {
@@ -39,7 +39,7 @@ describe('Users Endpoints', function() {
           testFarms,
           testFavorites,
         )
-      )
+      );
 
       it(`responds with 200 and all of the user information corresponding to the id set in the authorization`, () => {
         const expectedUser = [{
@@ -48,14 +48,15 @@ describe('Users Endpoints', function() {
           first_name: 'Test',
           last_name: 'User',
           user_type: 'Consumer',
-        }]
+        }];
+        // eslint-disable-next-line no-undef
         return supertest(app)
           .get(`/api/users`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
-          .expect(200, expectedUser)
-      })
-    })
-  })
+          .expect(200, expectedUser);
+      });
+    });
+  });
 
   describe(`GET /api/users/favorites`, () => {
 
@@ -67,7 +68,7 @@ describe('Users Endpoints', function() {
           testFarms,
           testFavorites,
         )
-      )
+      );
 
       it(`responds with 200 and the specified farm`, () => {
         const expectedFarms = [
@@ -92,12 +93,13 @@ describe('Users Endpoints', function() {
             farm_description: 'From our honeybees to you, raw local honey and other products from the hive. Apiaries located in Samson. Enjoy our liquid gold!',
             profile_image: 'https://cdn.pixabay.com/photo/2017/01/06/17/49/honey-1958464_960_720.jpg'
           }
-        ]
+        ];
+        // eslint-disable-next-line no-undef
         return supertest(app)
           .get(`/api/users/favorites`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[4]))
-          .expect(200, expectedFarms)
-      })
-    })
-  })
-})
+          .expect(200, expectedFarms);
+      });
+    });
+  });
+});

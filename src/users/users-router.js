@@ -1,8 +1,8 @@
-const express = require('express')
-const UsersService = require('./users-service')
-const usersRouter = express.Router()
-const jsonParser = express.json()
-const { requireAuth } = require('../middleware/jwt-auth')
+const express = require('express');
+const UsersService = require('./users-service');
+const usersRouter = express.Router();
+const jsonParser = express.json();
+const { requireAuth } = require('../middleware/jwt-auth');
 
 usersRouter
   .route('/')
@@ -19,13 +19,13 @@ usersRouter
             .status(404)
             .json({
               error: { message: `User does not exist` }
-            })
+            });
         }
-        res.json(user)
-        next()
+        res.json(user);
+        next();
       })
-      .catch(next)
-  })
+      .catch(next);
+  });
 
 usersRouter
   .route('/favorites')
@@ -37,10 +37,10 @@ usersRouter
       req.user.id
     )
       .then(favorites => {
-        res.json(favorites)
-        next()
+        res.json(favorites);
+        next();
       })
-      .catch(next)
-  })
+      .catch(next);
+  });
 
-  module.exports = usersRouter
+  module.exports = usersRouter;
